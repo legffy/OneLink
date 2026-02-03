@@ -7,18 +7,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-    <h1>OneLink</h1>
-    <nav>
+<header class="navbar">
+    <div class="navLeft">
+        <h1>OneLink</h1>
+    </div>
+    <div class="navRight">
         <a href="#" id="buildingLink">Buildings</a>
-    </nav>
+        <a href="#" id="mapLink">Map</a>
+        <a href="#" id="announcementsLink">Announcements</a>
+    </div>
 </header>
+
 <main id="app">
-    <section id="home">
+    <section id="buildingView" class="view">
         <h2>Campus Buildings</h2>
         <div id="buildingList"></div>
     </section>
+
+    <section id="mapView" class="view hidden">
+        <h2>Campus Map</h2>
+        <p>Map will go here later.</p>
+    </section>
+
+    <section id="announcementView" class="view hidden">
+        <h2>Announcements</h2>
+        <p>Emails will go here later.</p>
+    </section>
 </main>
+
 
 <script src="script.js"></script>
 </body>
