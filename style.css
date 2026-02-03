@@ -18,16 +18,27 @@ main {
     padding: 1rem;
 }
 
-#building-list {
+#buildingList {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
+
 .buildingCard {
     border: 1px solid #ddd;
     padding: 1rem;
     border-radius: 8px;
+    transition: transform 0.1s ease-in-out;
 }
+
+@media (hover: hover) {
+    .buildingCard:hover {
+        transform: scale(1.02);
+    }
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -43,8 +54,20 @@ main {
     text-decoration: none;
 }
 
-/* Basic mobile layout */
-@media (max-width: 600px) {
+#homeLink {
+    cursor: pointer;
+}
+
+.view {
+    padding: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/*Mobile*/
+@media (max-width: 768px) {
     .navbar {
         flex-direction: column;
         align-items: flex-start;
@@ -52,12 +75,12 @@ main {
 
     .navRight {
         margin-top: 0.5rem;
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
     }
-}
-.view {
-    padding: 1rem;
-}
 
-.hidden {
-    display: none;
+    #buildingList {
+        grid-template-columns: 1fr;
+    }
 }

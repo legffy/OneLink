@@ -22,7 +22,7 @@ function showView(name) {
     document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
     document.getElementById(`${name}-view`).classList.remove("hidden");
 }
-
+document.getElementById("homeLink").addEventListener("click", () => showView("buildings"));
 document.getElementById("buildingLink").addEventListener("click", () => showView("buildings"));
 document.getElementById("mapLink").addEventListener("click", () => showView("map"));
 document.getElementById("announcementsLink").addEventListener("click", () => showView("announcements"));
