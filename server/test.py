@@ -4,19 +4,25 @@ from typing import Any, Literal
 import uuid
 import requests
 import json
-import datetime
+from datetime import datetime, timedelta
 
 base_url: str = "https://rpi.emscloudservice.com/web"
 browse_url: str = f"{base_url}/BrowseEvents.aspx"
 api_url: str = f"{base_url}/AnonymousServersApi.aspx/BrowseEvents"
-
+session: requests.Session = requests.Session()
+session.get(browse_url, timeout=20)
   
 ResultType  = Literal["Daily", "Weekly", "Monthly"]
-def getCurrentEvents(daily: Any):
-    time: datetime = datetime.datetime.now()
+def getCurrentEvents():
+    time: datetime = datetime.now()
     start_time:datetime = time.replace(hour = 0,minute = 0, second = 0, microsecond =0)
-    print(start_time)
-    print(str(start_time))
+    end_time:datetime = start_time + timedelta(days = 1)
+    data:dict[str, Any] = browse_events(str(start_time),str(end_time), "Daily")
+    d: Any = data["d"]
+    d_obj: dict[str, Any] = json.loads(d)
+    dailyResults = d_obj["DailyBookingResults"]
+    for i in dailyResults:
+        print(i["Building"])
 def print_list_fields(obj: Any, path: str = "") -> None:
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -25,7 +31,7 @@ def print_list_fields(obj: Any, path: str = "") -> None:
                 print(f"LIST: {new_path}  len={len(v)}")
             else:
                 print_list_fields(v, new_path)
-def browse_events(session: requests.Session ,start_date: str, end_date: str, result_type: ResultType) -> dict[str, Any]:
+def browse_events(start_date: str, end_date: str, result_type: ResultType) -> dict[str, Any]:
   
     anti_xsrf: str | None = session.cookies.get("__AntiXsrfToken")
 
@@ -61,11 +67,9 @@ def browse_events(session: requests.Session ,start_date: str, end_date: str, res
     return r2.json()
 
 def main() -> None:
-    session: requests.Session = requests.Session()
-    session.get(browse_url, timeout=20)
+   
 
     data: dict[str, Any] = browse_events(
-        session=session,
         start_date="2026-02-03 00:00:00",
         end_date="2026-02-04 00:00:00",
         result_type = "Daily",
@@ -79,7 +83,7 @@ def main() -> None:
 
     first = d_obj["DailyBookingResults"][0]
     print(first)
-    print(first.keys())
-    getCurrentEvents(d_obj["DailyBookingResults"])
+    print(str(first.keys()))
+    getCurrentEvents()
 if __name__ == "__main__":
     main()
