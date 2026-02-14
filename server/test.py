@@ -22,7 +22,8 @@ def getCurrentEvents():
     d_obj: dict[str, Any] = json.loads(d)
     dailyResults = d_obj["DailyBookingResults"]
     for i in dailyResults:
-        print(i["Building"])
+        print(i['EventName'],' in ', i["Building"] , ' FROM ' , i['EventStart'], ' TO ' , i['EventEnd'])
+        print('Location ', i['Location'], i['Room'])
 def print_list_fields(obj: Any, path: str = "") -> None:
     if isinstance(obj, dict):
         for k, v in obj.items():
