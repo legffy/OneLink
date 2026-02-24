@@ -5,46 +5,27 @@ import uuid
 import requests
 import json
 from datetime import datetime, timedelta
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-import time
-def build_session() -> requests.Session:
-    s: requests.Session = requests.Session()
 
-    retries: Retry = Retry(
-        total=5,
-        backoff_factor=0.8,
-        status_forcelist=(429, 500, 502, 503, 504),
-        allowed_methods=frozenset({"GET", "POST"}),
-        raise_on_status=False,
-    )
-    adapter: HTTPAdapter = HTTPAdapter(max_retries=retries, pool_connections=10, pool_maxsize=10)
-    s.mount("https://", adapter)
-    s.mount("http://", adapter)
-
-    # Browser-ish defaults (helps with WAF / “python client” discrimination)
-    s.headers.update(
-        {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/121.0.0.0 Safari/537.36"
-            ),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Connection": "keep-alive",
-        }
-    )
-    return s
 def fmt(dt: datetime) -> str:
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 base_url: str = "https://rpi.emscloudservice.com/web"
 browse_url: str = f"{base_url}/BrowseEvents.aspx"
 api_url: str = f"{base_url}/AnonymousServersApi.aspx/BrowseEvents"
-session: requests.Session =build_session()
+session: requests.Session = requests.Session()
+session.get(browse_url, timeout=20)
 
-  
 ResultType  = Literal["Daily", "Weekly", "Monthly"]
+def getCurrentEvents():
+    time: datetime = datetime.now()
+    start_time:datetime = time.replace(hour = 0,minute = 0, second = 0, microsecond =0)
+    end_time:datetime = start_time + timedelta(days = 1)
+    data:dict[str, Any] = browse_events(str(start_time),str(end_time), "Daily")
+    d: Any = data["d"]
+    d_obj: dict[str, Any] = json.loads(d)
+    dailyResults = d_obj["DailyBookingResults"]
+    for i in dailyResults:
+        print(i['EventName'],' in ', i["Building"] , ' FROM ' , i['EventStart'], ' TO ' , i['EventEnd'])
+        print('Location ', i['Location'], i['Room'])
 def getGivenDayEvents(day: int, month: int, year: int):
     time: datetime = datetime.now()
     start_time: datetime = time.replace(year = year, month = month, day = day, hour = 0, minute = 0, second = 0, microsecond = 0 )
@@ -75,18 +56,8 @@ def getGivenDayEvents(day: int, month: int, year: int):
         res['buildings'].append(building_data)
         res['reservations'].append(reservation)
         res['rooms'].append(room_data)
-    print(res)
-def getCurrentEvents():
-    time: datetime = datetime.now()
-    start_time:datetime = time.replace(hour = 0,minute = 0, second = 0, microsecond =0)
-    end_time:datetime = start_time + timedelta(days = 1)
-    data:dict[str, Any] = browse_events(fmt(start_time), fmt(end_time), "Daily")
-    d: Any = data["d"]
-    d_obj: dict[str, Any] = json.loads(d)
-    dailyResults = d_obj["DailyBookingResults"]
-    for i in dailyResults:
-        print(i['EventName'],' in ', i["Building"] , ' FROM ' , i['EventStart'], ' TO ' , i['EventEnd'])
-        print('Location ', i['Location'], i['Room'], 'fafaf', i['RoomCode'])
+    print(res["reservations"])
+    return res
 def print_list_fields(obj: Any, path: str = "") -> None:
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -96,8 +67,26 @@ def print_list_fields(obj: Any, path: str = "") -> None:
             else:
                 print_list_fields(v, new_path)
 def browse_events(start_date: str, end_date: str, result_type: ResultType) -> dict[str, Any]:
+  
+    anti_xsrf: str | None = session.cookies.get("__AntiXsrfToken")
+
+    dea_csrftoken: str = str(uuid.uuid4())
+
+    headers: dict[str, str] = {
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Origin": "https://rpi.emscloudservice.com",
+        "Referer": browse_url,
+        "X-Requested-With": "XMLHttpRequest",
+    } 
+
+    if anti_xsrf is not None:
+        headers["X-CSRF-Token"] = anti_xsrf
+
+    headers["dea_csrftoken"] = dea_csrftoken
+
     payload: dict[str, object] = {
-        "filterData": {
+         "filterData": {
             "filters": [
                 {"filterName": "StartDate", "value": start_date, "filterType": 3},
                 {"filterName": "EndDate", "value": end_date, "filterType": 3},
@@ -108,71 +97,11 @@ def browse_events(start_date: str, end_date: str, result_type: ResultType) -> di
         }
     }
 
-    last_text: str = ""
-    last_status: int = -1
-
-    for attempt in range(3):
-        # fresh warmup each attempt
-        session.get(browse_url, timeout=(5, 90))
-
-        anti_xsrf: str | None = session.cookies.get("__AntiXsrfToken")
-        dea_csrftoken: str = str(uuid.uuid4())
-
-        # set token as cookie (important)
-        session.cookies.set(
-            "dea_csrftoken",
-            dea_csrftoken,
-            domain="rpi.emscloudservice.com",
-            path="/",
-        )
-
-        headers: dict[str, str] = {
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "Content-Type": "application/json; charset=UTF-8",
-            "Origin": "https://rpi.emscloudservice.com",
-            "Referer": browse_url,
-            "X-Requested-With": "XMLHttpRequest",
-            "dea_csrftoken": dea_csrftoken,  # keep if needed
-        }
-
-        if anti_xsrf is not None:
-            headers["X-CSRF-Token"] = anti_xsrf
-
-        r2: requests.Response = session.post(api_url, headers=headers, json=payload, timeout=(5, 90))
-
-        if r2.status_code == 200:
-            return r2.json()
-
-        last_status = r2.status_code
-        last_text = r2.text[:800]
-
-        if 500 <= r2.status_code <= 599:
-            time.sleep(0.7 * (attempt + 1))
-            continue
-
-        r2.raise_for_status()
-
-    raise RuntimeError(f"EMS kept failing after retries: {last_status} {last_text}")
-
+    r2: requests.Response = session.post(api_url, headers=headers, json = payload, timeout=20)
+    r2.raise_for_status()
+    return r2.json()
 
 def main() -> None:
-    session.get(browse_url, timeout=(5,90))
-
-    data: dict[str, Any] = browse_events(
-        start_date="2026-02-03 00:00:00",
-        end_date="2026-02-04 00:00:00",
-        result_type = "Daily",
-    )
-   # print(data)
-    print_list_fields(data['d'])
-    d: Any = data["d"]
-    d_obj: dict[str, Any] = json.loads(d)
-   #print("d keys:", list(d_obj.keys()))
-    #print("MonthlyBookingResults len:", len(d_obj.get("MonthlyBookingResults", [])))
-
-    first = d_obj["DailyBookingResults"][0]
-    print(first)
-    print(str(first.keys()))
-    getGivenDayEvents(5,2,2026)
+    getGivenDayEvents(3, 2, 2026)
 if __name__ == "__main__":
     main()

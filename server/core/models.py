@@ -10,6 +10,7 @@ class Building(models.Model):
     id: models.UUIDField = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     name: models.CharField = models.CharField(max_length=255)
+    raw_name: models.CharField = models.CharField(max_length=255, blank=True)
     slug: models.SlugField = models.SlugField(max_length=255, unique=True)
 
     address: models.CharField = models.CharField(max_length=255)
@@ -73,6 +74,7 @@ class Room(models.Model):
 
     room_code: models.CharField = models.CharField(max_length=255, blank=True)
     display_name: models.CharField = models.CharField(max_length=255)
+    raw_name: models.CharField = models.CharField(max_length=255, blank=True)
 
     floor_id: models.IntegerField = models.IntegerField(null=True, blank=True)
 
@@ -96,6 +98,7 @@ class Group(models.Model):
     id: models.UUIDField = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     name: models.CharField = models.CharField(max_length=255)
+    raw_name: models.CharField = models.CharField(max_length=255, blank=True)
     slug: models.SlugField = models.SlugField(max_length=255, unique=True)
     visible: models.BooleanField = models.BooleanField(default=True)
 
@@ -131,6 +134,7 @@ class Reservation(models.Model):
 
     event_name: models.CharField = models.CharField(max_length=255)
     group_name: models.CharField = models.CharField(max_length=255, null=True, blank=True)
+    raw_event_name: models.CharField = models.CharField(max_length=255, blank=True)
 
     status_id: models.SmallIntegerField = models.SmallIntegerField(null=True, blank=True)
     status_type_id: models.SmallIntegerField = models.SmallIntegerField(null=True, blank=True)
