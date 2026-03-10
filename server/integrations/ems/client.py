@@ -6,12 +6,14 @@ import requests
 import json
 from datetime import datetime, timedelta
 
+def fmt(dt: datetime) -> str:
+    return dt.strftime("%Y-%m-%d %H:%M:%S")
 base_url: str = "https://rpi.emscloudservice.com/web"
 browse_url: str = f"{base_url}/BrowseEvents.aspx"
 api_url: str = f"{base_url}/AnonymousServersApi.aspx/BrowseEvents"
 session: requests.Session = requests.Session()
 session.get(browse_url, timeout=20)
-  
+
 ResultType  = Literal["Daily", "Weekly", "Monthly"]
 def getCurrentEvents():
     time: datetime = datetime.now()
@@ -54,7 +56,8 @@ def getGivenDayEvents(day: int, month: int, year: int):
         res['buildings'].append(building_data)
         res['reservations'].append(reservation)
         res['rooms'].append(room_data)
-    print(res)
+    print(res["reservations"])
+    return res
 def print_list_fields(obj: Any, path: str = "") -> None:
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -99,23 +102,6 @@ def browse_events(start_date: str, end_date: str, result_type: ResultType) -> di
     return r2.json()
 
 def main() -> None:
-   
-
-    data: dict[str, Any] = browse_events(
-        start_date="2026-02-03 00:00:00",
-        end_date="2026-02-04 00:00:00",
-        result_type = "Daily",
-    )
-   # print(data)
-    print_list_fields(data['d'])
-    d: Any = data["d"]
-    d_obj: dict[str, Any] = json.loads(d)
-   #print("d keys:", list(d_obj.keys()))
-    #print("MonthlyBookingResults len:", len(d_obj.get("MonthlyBookingResults", [])))
-
-    first = d_obj["DailyBookingResults"][0]
-    print(first)
-    print(str(first.keys()))
-    getCurrentEvents()
+    getGivenDayEvents(3, 2, 2026)
 if __name__ == "__main__":
     main()
