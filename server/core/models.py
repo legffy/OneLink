@@ -66,7 +66,7 @@ class Room(models.Model):
         related_name="rooms",
     )
 
-    floor: models.IntegerField = models.IntegerField()
+    floor: models.IntegerField = models.IntegerField(null=True, blank=True)
     capacity: models.IntegerField = models.IntegerField(default=0)
 
     room_type: models.CharField = models.CharField(max_length=255, blank=True)
@@ -126,11 +126,11 @@ class Reservation(models.Model):
     start_time: models.DateTimeField = models.DateTimeField(db_index=True)
     end_time: models.DateTimeField = models.DateTimeField(db_index=True)
 
-    status: models.CharField = models.CharField(max_length=255, blank=True)
-    description: models.TextField = models.TextField(blank=True)
+    status: models.CharField = models.CharField(max_length=255, blank=True, null=True)
+    description: models.TextField = models.TextField(blank=True, null=True)
 
     external_reservation_id: models.BigIntegerField = models.BigIntegerField(unique=True, null=True, blank=True)
-    external_event_id: models.BigIntegerField = models.BigIntegerField(unique=True, null=True, blank=True)
+    external_event_id: models.BigIntegerField = models.BigIntegerField(null=True, blank=True)
 
     event_name: models.CharField = models.CharField(max_length=255)
     group_name: models.CharField = models.CharField(max_length=255, null=True, blank=True)

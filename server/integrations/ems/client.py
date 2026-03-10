@@ -34,9 +34,9 @@ def getGivenDayEvents(day: int, month: int, year: int):
     dayResults = data["DailyBookingResults"]
     res = {'reservations':[], 'buildings': [], 'rooms':[]}
     for item in dayResults:
-        reservation: dict[str,object]= {'event_name': item['EventName'], 'start_time': item['EventStart'], 'end_time': item['EventEnd'], 'status': item['Status'], 'description': item['RoomOverrideDescription'],
+        reservation_data: dict[str,object]= {'event_name': item['EventName'], 'start_time': item['EventStart'], 'end_time': item['EventEnd'], 'status': item['Status'], 'description': item['RoomOverrideDescription'],
                        'group_name': item['GroupName'],'is_all_day': item['IsAllDayEvent'], 'requires_check_in': item['RequiresCheckIn'], 'check_in_minutes': item['CheckInMinutes'], 
-                       'location_link': item['LocationLink'],'external_reservation_id': item['ReservationId'], 'external_event_id': item['InternalId']}
+                       'location_link': item['LocationLink'],'external_reservation_id': item['ReservationId'], 'external_event_id': item['InternalId'],   "external_room_id": item["RoomId"],}
         building_data: dict[str, object] = {
     "name": item["Building"],                      # Human-readable name
     "external_building_id": item["BuildingId"],   # Unique dedupe key
@@ -52,11 +52,12 @@ def getGivenDayEvents(day: int, month: int, year: int):
     "floor": item["Floor"],
     "floor_id": item["FloorID"],
     "is_active": True,
+    "external_building_id": item["BuildingId"]
 }
         res['buildings'].append(building_data)
-        res['reservations'].append(reservation)
+        res['reservations'].append(reservation_data)
         res['rooms'].append(room_data)
-    print(res["reservations"])
+    
     return res
 def print_list_fields(obj: Any, path: str = "") -> None:
     if isinstance(obj, dict):
