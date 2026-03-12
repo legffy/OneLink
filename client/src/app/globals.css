@@ -86,3 +86,34 @@ main {
         grid-template-columns: 1fr;
     }
 }
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdownMenu {
+  position: absolute;
+  background: #c8102e;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+  width: 200px;
+}
+
+.dropdownItem {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background: #c8102e;
+}
