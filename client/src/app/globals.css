@@ -87,6 +87,7 @@ main {
     }
 }
 
+/* Drop down menu CSS */
 .dropdown {
   position: relative;
   display: inline-block;
@@ -106,12 +107,14 @@ main {
   margin-top: 5px;
   padding: 0;
   list-style: none;
-  width: 200px;
+  min-width: 100%;
+  width: max-content;
 }
 
 .dropdownItem {
   padding: 10px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .dropdownItem:hover {

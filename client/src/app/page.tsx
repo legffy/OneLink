@@ -1,15 +1,16 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
 
   const buildings = [
-    "Darrin Communications Center",
-    "Low Center",
-    "Russell Sage Laboratory",
-    "Pittsburgh Building",
-    "Folsom Library"
+  { name: "Darrin Communications Center", slug: "darrin" },
+  { name: "Low Center", slug: "low" },
+  { name: "Russell Sage Laboratory", slug: "sage" },
+  { name: "Pittsburgh Building", slug: "pittsburgh" },
+  { name: "Folsom Library", slug: "folsom" }
   ];
 
   return (
@@ -28,14 +29,16 @@ export default function Home() {
             >
               Buildings ▼
             </button>
-
+            {/* Drop down menu */}
             {open && (
-              <ul className="dropdownMenu">
-                {buildings.map((building, index) => (
-                  <li key={index} className="dropdownItem">
-                    {building}
+             <ul className="dropdownMenu">
+                {buildings.map((building) => (
+                  <li key={building.slug} className="dropdownItem">
+                    <Link href={`/buildings/${building.slug}`}>
+                      {building.name}
+                    </Link>
                   </li>
-                ))}
+                  ))}
               </ul>
             )}
           </div>
