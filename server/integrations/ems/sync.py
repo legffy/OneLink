@@ -7,7 +7,7 @@ from core.models import Building, Reservation, Room
 def assign_campus() -> str:
     buildings = Building.objects.all()
     for building in buildings:
-        if "ec" in building.name.lower():
+        if "ec" in building.name.lower() or "harkness" in building.code.lower():
             Building.objects.filter(external_building_id=building.external_building_id).update(campus="East Campus Athletic Village")
         else:
             Building.objects.filter(external_building_id=building.external_building_id).update(campus="Main Campus")
