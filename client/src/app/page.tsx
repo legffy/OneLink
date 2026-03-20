@@ -1,17 +1,20 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import BuildingCard from "./components/buildingCard";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
 
   const buildings = [
-  { name: "Darrin Communications Center", slug: "darrin" },
-  { name: "Low Center", slug: "low" },
-  { name: "Russell Sage Laboratory", slug: "sage" },
-  { name: "Pittsburgh Building", slug: "pittsburgh" },
-  { name: "Folsom Library", slug: "folsom" }
+  { name: "Darrin Communications Center", slug: "darrin-communications-center" , seats: 550, image: "bot.png", abbreviation: "DCC"},
+  { name: "Low Center", slug: "low-center", seats: 550, image: "bot.png", abbreviation: "LOW"},
+  { name: "Russell Sage Laboratory", slug: "russell-sage-laboratory", seats: 550, image: "bot.png", abbreviation: "SAGE LABORATORY" },
+  { name: "Pittsburgh Building", slug: "pittsburgh-building", seats: 550, image: "bot.png", abbreviation: "PITTSBURGH"},
+  { name: "Folsom Library", slug: "folsom-library", seats: 900, image: "bot.png", abbreviation: "FOLSOM"}
   ];
+
+
 
   return (
     <div>
@@ -51,7 +54,19 @@ export default function Home() {
       <main id="app">
         <section id="buildingView" className="view">
           <h2>Campus Buildings</h2>
-          <div id="buildingList"></div>
+            <div className="flex flex-wrap justify-center">
+              {buildings.map((building) => (
+                <BuildingCard
+                  key={building.slug}
+                  name={building.name}
+                  slug={building.slug}
+                  description="Quick access to building information."
+                  image={building.image}
+                  seats={building.seats}
+                  abbreviation={building.abbreviation}
+                />
+              ))}
+            </div>
         </section>
 
         <section id="mapView" className="view hidden">
