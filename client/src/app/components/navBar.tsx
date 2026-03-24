@@ -2,29 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-
-const buildings = [
-  {
-    name: "Darrin Communications Center",
-    slug: "darrin-communications-center",
-  },
-  {
-    name: "Low Center",
-    slug: "low-center",
-  },
-  {
-    name: "Russell Sage Laboratory",
-    slug: "russell-sage-laboratory",
-  },
-  {
-    name: "Pittsburgh Building",
-    slug: "pittsburgh-building",
-  },
-  {
-    name: "Folsom Library",
-    slug: "folsom-library",
-  },
-];
+import { buildings } from "../data/buildings";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -68,7 +46,7 @@ export default function NavBar() {
             <ul className="dropdownMenu">
               {buildings.map((building) => (
                 <li key={building.slug} className="dropdownItem">
-                  <Link href={`/buildings/${building.slug}`}>
+                  <Link href={`/buildings/${building.slug}`} onClick={() => setOpen(false)}>
                     {building.name}
                   </Link>
                 </li>
