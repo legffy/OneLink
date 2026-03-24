@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 body {
     margin: 0;
     font-family: system-ui, -apple-system, Arial, sans-serif;
@@ -85,38 +83,4 @@ main {
     #buildingList {
         grid-template-columns: 1fr;
     }
-}
-
-/* Drop down menu CSS */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdownButton {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.dropdownMenu {
-  position: absolute;
-  background: #c8102e;
-  border: 1px solid #ccc;
-  margin-top: 5px;
-  padding: 0;
-  list-style: none;
-  min-width: 100%;
-  width: max-content;
-}
-
-.dropdownItem {
-  padding: 10px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.dropdownItem:hover {
-  background: #c8102e;
 }
