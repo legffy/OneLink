@@ -7,7 +7,7 @@ from core.models import Building, Reservation, Room
 def assign_campus() -> str:
     buildings = Building.objects.all()
     for building in buildings:
-        if "ec" in building.name.lower() or "harkness" in building.code.lower():
+        if "ec" in building.name.lower() or "harkness" in building.code.lower() or "stadium" in building.code.lower() or "turf" in building.code.lower():
             Building.objects.filter(external_building_id=building.external_building_id).update(campus="East Campus Athletic Village")
         else:
             Building.objects.filter(external_building_id=building.external_building_id).update(campus="Main Campus")
@@ -18,13 +18,13 @@ def insert_current_events() -> None:
     buildings = events["buildings"]
     reservations = events["reservations"]
     rooms = events["rooms"]
-    print("Buildings: ", buildings)
 
     for building in buildings:
         Building.objects.update_or_create(
             external_building_id=building["external_building_id"],
             defaults=building,
         )
+    assign_campus()
     for room in rooms:
         building = Building.objects.get(
             external_building_id=room["external_building_id"]
@@ -45,4 +45,5 @@ def insert_current_events() -> None:
                 **reservation,
                 "room": room
             }
+        
     )

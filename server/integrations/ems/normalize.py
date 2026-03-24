@@ -1,14 +1,14 @@
 def normalize_building_name(building_name: str) -> str:
     building_name = building_name.lower()
+    if building_name == "87gym":
+        return "87 Gymnasium"
     if building_name == "biotk1":
         return "Center for Biotechnology and Interdisciplinary Studies"
     if building_name == "j-rowl":
         return "Jonsson Rowland Science Center"
     if building_name == "jonssn":
         return "Jonsson Engineering Center"
-    if building_name == "ath-f":
-        return "Ned Harkness Field and Track"
-    if building_name == "robisin":
+    if building_name == "robisn":
         return "Mueller Robison Pool"
     if building_name == "armory":
         return "Mueller Armory Building"
@@ -32,8 +32,18 @@ def normalize_building_name(building_name: str) -> str:
         return "Playhouse"
     if building_name == "sage":
         return "Sage Building"
-    
+    if building_name == "lally":
+        return "Lally School of Management"
+    if building_name == "rcktts":
+        return "Ricketts Building"
+    if building_name == "ec0001":
+        return "East Campus Athletic Village"
+    if building_name == "east campus stadium":
+        return "East Campus Stadium"
+    if building_name == "lower renwyck turf field":
+        return "Lower Renwyck Turf Field"
     return building_name
+   
 def normalize_slug(building_name: str) ->str:
     if building_name == "Center for Biotechnology and Interdisciplinary Studies":
         return "CBIS"
@@ -63,4 +73,20 @@ def normalize_slug(building_name: str) ->str:
         return "MRC"
     if building_name == "Sage Building":
         return "Sage"
+    if building_name == "Playhouse":
+        return "Playhouse"
+    if building_name == "87 Gymnasium":
+        return "87 Gym"
+    if building_name == "Lally School of Management":
+        return "Lally"
+    if building_name == "Ricketts Building":
+        return "Ricketts"
+    if building_name == "Ned Harkness Field and Track":
+        return "Harkness"
+    if building_name == "East Campus Stadium":
+        return "Stadium"    
+    if building_name == "East Campus Athletic Village":
+        return "ECAV"
+    if building_name == "Lower Renwyck Turf Field":
+        return "LRT"
     return building_name
