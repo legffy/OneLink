@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 const buildings = [
@@ -28,6 +28,24 @@ const buildings = [
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="navbar">
@@ -38,7 +56,7 @@ export default function NavBar() {
       </div>
 
       <div className="navRight">
-        <div className="dropdown">
+        <div className="dropdown" ref={dropdownRef}>
           <button
             id="buildingLink"
             onClick={() => setOpen(!open)}
