@@ -83,6 +83,48 @@ export const buildings: Building[] = [
     highlights: ["Largest seating capacity", "Quiet and group study", "Popular study destination"],
     facilities: ["Study tables", "Research support", "Collaborative seating", "Accessible entry"],
   },
+  {
+    name: "Mueller Recreation Center",
+    slug: "mueller-recreation",
+    seats: 350,
+    image: "/mueller.jpg",
+    abbreviation: "MUELLER",
+    tagline: "Fitness, intramural activity, and student recreation in one active hub.",
+    description:
+      "A campus recreation center designed for workouts, pickup games, group activities, and everyday student wellness.",
+    location: "1643 15th St, Troy, NY 12180",
+    hours: "Open daily, 8:00 AM to 11:00 PM",
+    highlights: ["Indoor recreation space", "Popular fitness destination", "Supports sports and group activity"],
+    facilities: ["Swimming pool", "Basketball courts", "Student lounge", "Weight rooms"],
+  },
+  {
+    name: "'87 Gym",
+    slug: "87-gym",
+    seats: 200,
+    image: "/87.jpg",
+    abbreviation: "'87 GYM",
+    tagline: "Courts, fitness space, and active student use throughout the day.",
+    description:
+      "A student recreation and athletics space used for open gym activity, workouts, and campus fitness programming.",
+    location: "1145 Sage Ave, Troy, NY 12180",
+    hours: "Open daily, 8:00 AM to 11:00 PM",
+    highlights: ["Flexible recreation space", "Popular for active student use", "Supports pickup games and training"],
+    facilities: ["Gym courts", "Fitness areas", "Open recreation space", "Student gathering areas"],
+  },
+  {
+    name: "ECAV Stadium",
+    slug: "ecav-stadium",
+    seats: 200,
+    image: "/ecav.jpg",
+    abbreviation: "ECAV",
+    tagline: "Outdoor competition, athletic events, and large-campus game day energy.",
+    description:
+      "A major outdoor athletics venue used for varsity competition, team practices, and larger campus sporting events.",
+    location: "East Campus Athletic Village",
+    hours: "Open daily, 8:00 AM to 11:00 PM",
+    highlights: ["Outdoor stadium venue", "Hosts athletic events", "Designed for team competition and spectators"],
+    facilities: ["Stadium seating", "Athletic field", "Event access areas", "Team support spaces"],
+  },
 ];
 
 export function getBuildingBySlug(slug: string) {
