@@ -52,8 +52,20 @@ def getGivenDayEvents(day: int, month: int, year: int):
     dayResults = data["DailyBookingResults"]
     res = {"reservations": [], "buildings": [], "rooms": []}
     for item in dayResults:
-        building_name = normalize_building_name(item["Building"])
-        
+        print(item)
+        building_name = ""  # Default to empty string if not found
+        if item["Building"]  == "ec0001" or item["Building"] == "ATH-F":
+            code = item["Location"].lower()
+            if "harkness" in code:
+                building_name = "Ned Harkness Field and Track"
+            elif "stadium" in code:
+                building_name = "East Campus Stadium"
+            elif "lower renwyck turf" in code:
+                building_name = "Lower Renwyck Turf Field"
+            else:
+                building_name = "East Campus Athletic Village"
+        building_name = normalize_building_name(building_name if building_name != "" else item["Building"])
+
         slug = normalize_slug(building_name)
         reservation_data: dict[str, object] = {
             "event_name": item["EventName"],
