@@ -15,7 +15,7 @@ export default function Home() {
             Choose a building to open a dedicated information page.
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-600">
-            Each card opens a fuller page with location details, hours, capacity, and what the building is best used for.
+            Each card opens a page with location details, hours, capacity, and what the building is best used for.
           </p>
         </div>
 
