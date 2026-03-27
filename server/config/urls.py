@@ -16,8 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core.views import hello
+from rest_framework.viewsets import ModelViewSet
+from core.views import BuildingView, RoomView, GroupView, ReservationView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("hello/", hello),
+    path("api/buildings/", BuildingView.as_view()),
+    path("api/rooms/", RoomView.as_view()),
+    path("api/groups/", GroupView.as_view()),
+    path("api/reservations/", ReservationView.as_view())
 ]

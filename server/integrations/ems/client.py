@@ -52,6 +52,7 @@ def getGivenDayEvents(day: int, month: int, year: int):
     dayResults = data["DailyBookingResults"]
     res = {"reservations": [], "buildings": [], "rooms": []}
     for item in dayResults:
+        print(item)
         building_name = ""  # Default to empty string if not found
         if item["Building"]  == "ec0001" or item["Building"] == "ATH-F":
             code = item["Location"].lower()

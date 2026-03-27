@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from celery.schedules import crontab
 
 from dotenv import load_dotenv
 
@@ -44,8 +45,9 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'django_celery_beat',
 
-    'core'
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -139,5 +141,31 @@ REST_FRAMEWORK: dict[str, object] = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+}
+
+CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", "redis://127.0.0.1:6379/0")
+CELERY_RESULT_BACKEND: str = os.getenv("CELERY_RESULT_BACKEND", CELERY_BROKER_URL)
+CELERY_ACCEPT_CONTENT: list[str] = ["json"]
+CELERY_TASK_SERIALIZER: str = "json"
+CELERY_RESULT_SERIALIZER: str = "json"
+CELERY_TIMEZONE: str = TIME_ZONE
+
+CELERY_BEAT_SCHEDULE = {
+    "ems-sync-today-every-5-min": {
+        "task": "core.tasks.sync_today_events",
+        "schedule": 300.0,
+    },
+    "ems-sync-week-every-3-hours": {
+        "task": "core.tasks.sync_week_events",
+        "schedule": crontab(minute=0, hour="*/3"),
+    },
+    "ems-sync-future-months-daily": {
+        "task": "core.tasks.sync_future_month_events",
+        "schedule": crontab(minute=0, hour=0),
+    },
+    "ems-full-refresh-monthly": {
+        "task": "core.tasks.full_refresh",
+        "schedule": crontab(minute=0, hour=0, day_of_month=1),
+    },
 }
 
