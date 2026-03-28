@@ -13,8 +13,32 @@ export default function Home() {
   { name: "Pittsburgh Building", slug: "pittsburgh-building", seats: 550, image: "bot.png", abbreviation: "PITTSBURGH"},
   { name: "Folsom Library", slug: "folsom-library", seats: 900, image: "bot.png", abbreviation: "FOLSOM"}
   ];
-
-
+  const [apibuildings, setApiBuildings] = useState({});
+  const getBuildingInfo = async () => {
+    try{
+      const res = await fetch("http://127.0.0.1:8000/api/buildings/");
+      const data = await res.json();
+      setApiBuildings(data);
+      console.log("Feteched building data:",data);
+    } catch (error){
+      console.error("Error fetching tree data:", error);
+    }
+  }
+  const [treeData, setTreeData] = useState<Node[]>([]);
+  const fetchTreeData = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/all_instruments_by_scale");
+      const data = await res.json();
+      let newTreeData: Node[] | undefined = createTree(data);
+      setTreeData(newTreeData || [{ name: "No data", children: undefined }]);
+      console.log("Fetched tree data:", data);
+    } catch (error) {
+      console.error("Error fetching tree data:", error);
+    }
+  };
+  useEffect(() => {
+    fetchTreeData();
+  }, []);
 
   return (
     <div>
