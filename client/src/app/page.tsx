@@ -1,19 +1,15 @@
 "use client";
 
 import BuildingCard from "./components/buildingCard";
-import { buildings } from "./data/buildings";
+import { buildings,getBuildingInfo } from "./data/buildings";
 import { useState, useEffect } from "react";
 export default function Home() {
   const [apibuildings, setApiBuildings] = useState({}); 
-  const getBuildingInfo = async () => { 
-    try{ const res = await fetch("http://127.0.0.1:8000/api/buildings/"); 
-      const data = await res.json(); setApiBuildings(data); 
-      console.log("Feteched building data:",data); } 
-      catch (error){ 
-        console.error("Error fetching tree data:", error); 
-      } 
-    } 
-    useEffect(() => { getBuildingInfo() },[])
+  
+    useEffect(() => { 
+      const buildingResult = getBuildingInfo() 
+      setApiBuildings(apibuildings);
+    },[])
   return (
     <main id="app" className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(200,16,46,0.12),transparent_36%),linear-gradient(180deg,#fff8f5_0%,#ffffff_48%,#f5f7fb_100%)] px-6 py-10">
       <section id="buildingView" className="view mx-auto max-w-6xl">
