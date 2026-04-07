@@ -1,4 +1,4 @@
-export type Building = {
+/*export type Building = {
   name: string;
   slug: string;
   seats: number;
@@ -11,10 +11,10 @@ export type Building = {
   highlights: string[];
   facilities: string[];
 };
+*/
 
 
-
-export const buildings: Building[] = [
+export const buildings = [
   {
     name: "Darrin Communications Center",
     slug: "darrin-communications-center",
@@ -127,7 +127,7 @@ export const buildings: Building[] = [
     highlights: ["Outdoor stadium venue", "Hosts athletic events", "Designed for team competition and spectators"],
     facilities: ["Stadium seating", "Athletic field", "Event access areas", "Team support spaces"],
   },
-];
+]; 
 
 export function getBuildingBySlug(slug: string) {
   return buildings.find((building) => building.slug === slug);
@@ -138,7 +138,22 @@ export async function getBuildingInfo() {
       const data = await res.json();
       return data;
   }catch (error){ 
-        console.error("Error fetching tree data:", error); 
+        console.error("Error fetching buildings data:", error); 
       }     
     return {}
+  }
+export async function getBuildingById(id: string) {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/buildings/${id}`);
+      const data = await res.json();
+      return data;
+    } catch(error) {
+      console.error("Error fetching building data:", error);
+    }
+}
+export type building = {
+    name: string;
+    slug: string;
+    campus: string;
+    id: string;
   }

@@ -1,37 +1,37 @@
+"use client"
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { buildings, getBuildingBySlug } from "../../data/buildings";
+import { notFound, useParams, useSearchParams } from "next/navigation";
+import { buildings, getBuildingBySlug, getBuildingById, building } from "../../data/buildings";
+import { useState, useEffect} from "react";
 
 type PageProps = {
   params: Promise<{ name: string }>;
 };
+/*
+ <!--
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {building.facilities.map((facility) => (
+                <div
+                  key={facility}
+                  className="rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm font-medium text-zinc-700"
+                >
+                  {facility}
+                </div>
+              ))}
+            </div>
+            --> */
 
-export async function generateStaticParams() {
-  return buildings.map((building) => ({ name: building.slug }));
-}
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { name } = await params;
-  const building = getBuildingBySlug(name);
-
-  if (!building) {
-    return {
-      title: "Building Not Found",
-    };
-  }
-
-  return {
-    title: `${building.name} | OneLink`,
-    description: building.description,
-  };
-}
-
-export default async function BuildingPage({ params }: PageProps) {
-  const { name } = await params;
-  const building = getBuildingBySlug(name);
-
+export default  function BuildingPage() {
+  const { name } = useParams();
+  const [building, setBuilding] = useState<building | null>(null);
+  useEffect(() => {
+    getBuildingById(name).then((data) => {
+      setBuilding(data);
+    },);
+  },[name])
   if (!building) {
     notFound();
   }
@@ -50,7 +50,7 @@ export default async function BuildingPage({ params }: PageProps) {
           <div className="grid lg:grid-cols-[1.2fr_0.8fr]">
             <div className="relative min-h-[360px]">
               <Image
-                src={building.image}
+                src="/mueller.jpg"
                 alt={building.name}
                 fill
                 priority
@@ -60,13 +60,13 @@ export default async function BuildingPage({ params }: PageProps) {
               <div className="absolute inset-0 bg-gradient-to-tr from-black via-black/45 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-300">
-                  {building.abbreviation}
+                  {building.campus}
                 </p>
                 <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
                   {building.name}
                 </h1>
                 <p className="mt-4 max-w-xl text-base leading-7 text-white/80">
-                  {building.tagline}
+                  {building.slug}
                 </p>
               </div>
             </div>
@@ -74,21 +74,21 @@ export default async function BuildingPage({ params }: PageProps) {
             <div className="flex flex-col justify-between gap-6 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 sm:p-8">
               <div>
                 <p className="text-sm uppercase tracking-[0.24em] text-white/45">Overview</p>
-                <p className="mt-4 text-base leading-7 text-white/80">{building.description}</p>
+                <p className="mt-4 text-base leading-7 text-white/80">description</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-white/45">Capacity</p>
-                  <p className="mt-2 text-2xl font-semibold">{building.seats}</p>
+                  <p className="mt-2 text-2xl font-semibold">seats</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-white/45">Hours</p>
-                  <p className="mt-2 text-sm font-semibold leading-6">{building.hours}</p>
+                  <p className="mt-2 text-sm font-semibold leading-6">hours</p>
                 </div>
                 <div className="col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-white/45">Location</p>
-                  <p className="mt-2 text-sm font-semibold leading-6">{building.location}</p>
+                  <p className="mt-2 text-sm font-semibold leading-6">address</p>
                 </div>
               </div>
             </div>
@@ -116,16 +116,7 @@ export default async function BuildingPage({ params }: PageProps) {
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">
               What you&apos;ll find here
             </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {building.facilities.map((facility) => (
-                <div
-                  key={facility}
-                  className="rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm font-medium text-zinc-700"
-                >
-                  {facility}
-                </div>
-              ))}
-            </div>
+           
           </div>
         </section>
       </div>

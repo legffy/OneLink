@@ -12,6 +12,13 @@ class BuildingView(APIView):
         buildings = Building.objects.all()
         serializer = BuildingSerializer(buildings, many=True)
         return Response(serializer.data)
+    def get_building(self, request: Request, building_id: str) -> Response:
+        try:
+            building = Building.objects.get(id=building_id)
+        except Building.DoesNotExist:
+            return Response({"detail": "Building not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = BuildingSerializer(building)
+        return Response(serializer.data)
 class RoomView(APIView):
     def get(self, request: Request) -> Response:
         rooms = Room.objects.all()

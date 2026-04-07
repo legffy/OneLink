@@ -28,6 +28,8 @@ class Building(models.Model):
 
     created_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
     updated_at: models.DateTimeField = models.DateTimeField(auto_now=True)
+    description: models.TextField = models.TextField(blank=True)
+    image_url: models.URLField = models.URLField(blank=True)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.code or self.slug})"

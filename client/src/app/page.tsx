@@ -1,15 +1,17 @@
 "use client";
 
 import BuildingCard from "./components/buildingCard";
-import { buildings,getBuildingInfo } from "./data/buildings";
+import { getBuildingInfo } from "./data/buildings";
 import { useState, useEffect } from "react";
+import type {building} from "./data/buildings";
 export default function Home() {
-  const [apibuildings, setApiBuildings] = useState({}); 
-  
-    useEffect(() => { 
-      const buildingResult = getBuildingInfo() 
-      setApiBuildings(apibuildings);
+    const [buildings, setBuildings] = useState<building[]>([]);
+    useEffect(() =>{
+      getBuildingInfo().then((data) => {
+      setBuildings(data);
+      })
     },[])
+  
   return (
     <main id="app" className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(200,16,46,0.12),transparent_36%),linear-gradient(180deg,#fff8f5_0%,#ffffff_48%,#f5f7fb_100%)] px-6 py-10">
       <section id="buildingView" className="view mx-auto max-w-6xl">
@@ -31,11 +33,8 @@ export default function Home() {
               key={building.slug}
               name={building.name}
               slug={building.slug}
-              description={building.description}
-              image={building.image}
-              seats={building.seats}
-              abbreviation={building.abbreviation}
-              tagline={building.tagline}
+              campus = {building.campus}
+              id = {building.id}
             />
           ))}
         </div>
