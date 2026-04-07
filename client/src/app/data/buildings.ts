@@ -1,4 +1,13 @@
-/*export type Building = {
+export type BuildingEvent = {
+  title: string;
+  startTime: string;
+  endTime: string;
+  location?: string;
+  type?: string;
+  status?: string;
+};
+
+export type Building = {
   name: string;
   slug: string;
   seats: number;
@@ -10,6 +19,7 @@
   hours: string;
   highlights: string[];
   facilities: string[];
+  eventSchedule?: BuildingEvent[];
 };
 */
 
