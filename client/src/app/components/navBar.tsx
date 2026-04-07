@@ -2,16 +2,19 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
- import { building, getBuildingInfo } from "../data/buildings";
+import { getBuildingInfo } from "../data/buildings";
+import type { ApiBuilding } from "../data/buildings";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
-  const [buildings, setBuildings] = useState<building[]>([]);
+  const [buildings, setBuildings] = useState<ApiBuilding[]>([]);
+
   useEffect(() => {
-     getBuildingInfo().then((data) => {
-    setBuildings(data);
-    })
-  },[])
+    getBuildingInfo().then((data) => {
+      setBuildings(data);
+    });
+  }, []);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

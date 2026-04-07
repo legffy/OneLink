@@ -21,10 +21,18 @@ export type Building = {
   facilities: string[];
   eventSchedule?: BuildingEvent[];
 };
-*/
 
+export type ApiBuilding = {
+  id: string;
+  name: string;
+  slug: string;
+  campus: string;
+  address?: string;
+  description?: string;
+  image_url?: string;
+};
 
-export const buildings = [
+export const buildings: Building[] = [
   {
     name: "Darrin Communications Center",
     slug: "darrin-communications-center",
@@ -137,33 +145,41 @@ export const buildings = [
     highlights: ["Outdoor stadium venue", "Hosts athletic events", "Designed for team competition and spectators"],
     facilities: ["Stadium seating", "Athletic field", "Event access areas", "Team support spaces"],
   },
-]; 
+];
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000/api/buildings";
 
 export function getBuildingBySlug(slug: string) {
   return buildings.find((building) => building.slug === slug);
 }
 
-export async function getBuildingInfo() {
-  try{ const res = await fetch("http://127.0.0.1:8000/api/buildings/"); 
-      const data = await res.json();
-      return data;
-  }catch (error){ 
-        console.error("Error fetching buildings data:", error); 
-      }     
-    return {}
-  }
-export async function getBuildingById(id: string) {
-    try {
-      const res = await fetch(`http://127.0.0.1:8000/api/buildings/${id}`);
-      const data = await res.json();
-      return data;
-    } catch(error) {
-      console.error("Error fetching building data:", error);
+export async function getBuildingInfo(): Promise<ApiBuilding[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/`);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch buildings: ${res.status}`);
     }
-}
-export type building = {
-    name: string;
-    slug: string;
-    campus: string;
-    id: string;
+
+    return (await res.json()) as ApiBuilding[];
+  } catch (error) {
+    console.error("Error fetching buildings data:", error);
+    return [];
   }
+}
+
+export async function getBuildingById(id: string): Promise<ApiBuilding | null> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/${id}`);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch building: ${res.status}`);
+    }
+
+    return (await res.json()) as ApiBuilding;
+  } catch (error) {
+    console.error("Error fetching building data:", error);
+    return null;
+  }
+}

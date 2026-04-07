@@ -4,6 +4,7 @@ from datetime import date, datetime, timedelta
 
 from django.db import transaction
 
+from core.building_images import get_building_image_url
 from integrations.ems.client import getGivenDayEvents
 from core.models import Building, Reservation, Room
 
@@ -41,6 +42,7 @@ def sync_day(target_day: date) -> dict[str, int]:
                     str(building_data.get("name", "")),
                     str(building_data.get("code", "")),
                 ),
+                "image_url": get_building_image_url(str(building_data.get("slug", ""))),
             }
             _, created = Building.objects.update_or_create(
                 external_building_id=building_data["external_building_id"],

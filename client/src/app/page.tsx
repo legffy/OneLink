@@ -3,14 +3,16 @@
 import BuildingCard from "./components/buildingCard";
 import { getBuildingInfo } from "./data/buildings";
 import { useState, useEffect } from "react";
-import type {building} from "./data/buildings";
+import type { ApiBuilding } from "./data/buildings";
+
 export default function Home() {
-    const [buildings, setBuildings] = useState<building[]>([]);
-    useEffect(() =>{
+    const [buildings, setBuildings] = useState<ApiBuilding[]>([]);
+
+    useEffect(() => {
       getBuildingInfo().then((data) => {
       setBuildings(data);
-      })
-    },[])
+      });
+    }, []);
   
   return (
     <main id="app" className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(200,16,46,0.12),transparent_36%),linear-gradient(180deg,#fff8f5_0%,#ffffff_48%,#f5f7fb_100%)] px-6 py-10">
@@ -30,11 +32,12 @@ export default function Home() {
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {buildings.map((building) => (
             <BuildingCard
-              key={building.slug}
+              key={building.id}
               name={building.name}
               slug={building.slug}
-              campus = {building.campus}
-              id = {building.id}
+              campus={building.campus}
+              id={building.id}
+              imageUrl={building.image_url}
             />
           ))}
         </div>

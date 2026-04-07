@@ -1,14 +1,19 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import BuildingCard from "../components/buildingCard";
-import { getBuildingInfo  } from "../data/buildings";
-import type { building } from "../data/buildings";
+import { getBuildingInfo } from "../data/buildings";
+import type { ApiBuilding } from "../data/buildings";
+
 export default function Campus() {
-  const [buildings, setBuildings] = useState<building[]>([]);
-  useEffect(() =>{
+  const [buildings, setBuildings] = useState<ApiBuilding[]>([]);
+
+  useEffect(() => {
     getBuildingInfo().then((data) => {
-    setBuildings(data);
-    })
-  },[])
+      setBuildings(data);
+    });
+  }, []);
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fff7f6_0%,#ffffff_45%,#f7f8fb_100%)] px-6 py-10">
       <div className="mx-auto max-w-6xl">
@@ -22,8 +27,9 @@ export default function Campus() {
               key={building.id}
               name={building.name}
               slug={building.slug}
-              campus = {building.campus}
-              id = {building.id}
+              campus={building.campus}
+              id={building.id}
+              imageUrl={building.image_url}
             />
           ))}
         </div>

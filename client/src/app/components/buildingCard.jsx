@@ -1,7 +1,10 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function BuildingCard({ name, slug, campus, id}) {
+export default function BuildingCard({ name, slug, campus, id, imageUrl }) {
+  const imageSrc = imageUrl || "/mueller.jpg";
+  const isRemoteImage = imageSrc.startsWith("http");
+
   return (
     <Link
       href={`/buildings/${id}`}
@@ -9,10 +12,11 @@ export default function BuildingCard({ name, slug, campus, id}) {
     >
       <div className="relative h-52 overflow-hidden">
         <Image
-          src={"/mueller.jpg"}
+          src={imageSrc}
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          unoptimized={isRemoteImage}
           className="object-cover transition duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -27,15 +31,15 @@ export default function BuildingCard({ name, slug, campus, id}) {
 
       <div className="space-y-4 p-5">
         <div className="flex items-center justify-between text-sm text-zinc-500">
-          <span>Capacity</span>
-          <span className="font-semibold text-zinc-900">tmp</span>
+          <span>Campus</span>
+          <span className="font-semibold text-zinc-900">{campus}</span>
         </div>
-        <p className="text-sm leading-6 text-zinc-600">tmp</p>
+        <p className="text-sm leading-6 text-zinc-600">
+          Open the building page for location details, hours, and schedule placeholders.
+        </p>
         <div className="flex items-center justify-between border-t border-zinc-200 pt-4 text-sm font-semibold text-zinc-900">
           <span>Open building page</span>
-          <span className="transition-transform duration-300 group-hover:translate-x-1">
-            →
-          </span>
+          <span className="transition-transform duration-300 group-hover:translate-x-1">View</span>
         </div>
       </div>
     </Link>
