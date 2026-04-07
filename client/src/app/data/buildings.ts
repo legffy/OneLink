@@ -1,3 +1,12 @@
+export type BuildingEvent = {
+  title: string;
+  startTime: string;
+  endTime: string;
+  location?: string;
+  type?: string;
+  status?: string;
+};
+
 export type Building = {
   name: string;
   slug: string;
@@ -10,7 +19,10 @@ export type Building = {
   hours: string;
   highlights: string[];
   facilities: string[];
+  eventSchedule?: BuildingEvent[];
 };
+
+
 
 export const buildings: Building[] = [
   {
@@ -130,3 +142,13 @@ export const buildings: Building[] = [
 export function getBuildingBySlug(slug: string) {
   return buildings.find((building) => building.slug === slug);
 }
+
+export async function getBuildingInfo() {
+  try{ const res = await fetch("http://127.0.0.1:8000/api/buildings/"); 
+      const data = await res.json();
+      return data;
+  }catch (error){ 
+        console.error("Error fetching tree data:", error); 
+      }     
+    return {}
+  }
