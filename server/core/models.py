@@ -131,7 +131,7 @@ class Reservation(models.Model):
     status: models.CharField = models.CharField(max_length=255, blank=True, null=True)
     description: models.TextField = models.TextField(blank=True, null=True)
 
-    external_reservation_id: models.BigIntegerField = models.BigIntegerField(unique=True, null=True, blank=True)
+    external_reservation_id: models.BigIntegerField = models.BigIntegerField(null=True, blank=True)
     external_event_id: models.BigIntegerField = models.BigIntegerField(null=True, blank=True)
 
     event_name: models.CharField = models.CharField(max_length=255)
@@ -154,6 +154,12 @@ class Reservation(models.Model):
         indexes = [
             models.Index(fields=["room", "start_time"]),
             models.Index(fields=["start_time", "end_time"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields = ["external_reservation_id", "room"],
+                name = "uniq_reservation_per_room",
+            ),
         ]
 
     def __str__(self) -> str:

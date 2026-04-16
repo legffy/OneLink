@@ -1,28 +1,81 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta
+import json
 from typing import Any, Literal
 import uuid
+from zoneinfo import ZoneInfo
+
 import requests
-import json
-from datetime import datetime, timedelta
+
 from .normalize import normalize_building_name, normalize_slug
 
 
+EMS_TIMEZONE = ZoneInfo("America/New_York")
+EMS_DATETIME_FORMATS: tuple[str, ...] = (
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d %H:%M",
+    "%Y-%m-%dT%H:%M:%S",
+    "%Y-%m-%dT%H:%M:%S.%f",
+    "%m/%d/%Y %I:%M:%S %p",
+    "%m/%d/%Y %I:%M %p",
+    "%m/%d/%Y %H:%M:%S",
+    "%m/%d/%Y %H:%M",
+)
+
+
 def fmt(dt: datetime) -> str:
-    return dt.strftime("%Y-%m-%d %H:%M:%S")
+    return dt.astimezone(EMS_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def parse_ems_datetime(value: object) -> datetime:
+    raw_value = str(value).strip()
+    if not raw_value:
+        raise ValueError("EMS datetime value was empty.")
+
+    iso_candidate = raw_value.replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(iso_candidate)
+    except ValueError:
+        parsed = None
+
+    if parsed is None:
+        for fmt_pattern in EMS_DATETIME_FORMATS:
+            try:
+                parsed = datetime.strptime(raw_value, fmt_pattern)
+                break
+            except ValueError:
+                continue
+
+    if parsed is None:
+        raise ValueError(f"Unsupported EMS datetime format: {raw_value!r}")
+
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=EMS_TIMEZONE)
+
+    return parsed.astimezone(EMS_TIMEZONE)
 
 
 base_url: str = "https://rpi.emscloudservice.com/web"
 browse_url: str = f"{base_url}/BrowseEvents.aspx"
 api_url: str = f"{base_url}/AnonymousServersApi.aspx/BrowseEvents"
-session: requests.Session = requests.Session()
-session.get(browse_url, timeout=20)
+session: requests.Session | None = None
+
+
+def get_session() -> requests.Session:
+    global session
+
+    if session is None:
+        session = requests.Session()
+        session.get(browse_url, timeout=20)
+
+    return session
 
 ResultType = Literal["Daily", "Weekly", "Monthly"]
 
 
 def getCurrentEvents():
-    time: datetime = datetime.now()
+    time: datetime = datetime.now(EMS_TIMEZONE)
     start_time: datetime = time.replace(hour=0, minute=0, second=0, microsecond=0)
     end_time: datetime = start_time + timedelta(days=1)
     data: dict[str, Any] = browse_events(str(start_time), str(end_time), "Daily")
@@ -43,7 +96,7 @@ def getCurrentEvents():
 
 
 def getGivenDayEvents(day: int, month: int, year: int):
-    time: datetime = datetime.now()
+    time: datetime = datetime.now(EMS_TIMEZONE)
     start_time: datetime = time.replace(
         year=year, month=month, day=day, hour=0, minute=0, second=0, microsecond=0
     )
@@ -52,7 +105,6 @@ def getGivenDayEvents(day: int, month: int, year: int):
     dayResults = data["DailyBookingResults"]
     res = {"reservations": [], "buildings": [], "rooms": []}
     for item in dayResults:
-        print(item)
         building_name = ""  # Default to empty string if not found
         if item["Building"]  == "ec0001" or item["Building"] == "ATH-F":
             code = item["Location"].lower()
@@ -69,8 +121,8 @@ def getGivenDayEvents(day: int, month: int, year: int):
         slug = normalize_slug(building_name)
         reservation_data: dict[str, object] = {
             "event_name": item["EventName"],
-            "start_time": item["EventStart"],
-            "end_time": item["EventEnd"],
+            "start_time": parse_ems_datetime(item["EventStart"]),
+            "end_time": parse_ems_datetime(item["EventEnd"]),
             "status": item["Status"],
             "description": item["RoomOverrideDescription"],
             "group_name": item["GroupName"],
@@ -124,8 +176,9 @@ def print_list_fields(obj: Any, path: str = "") -> None:
 def browse_events(
     start_date: str, end_date: str, result_type: ResultType
 ) -> dict[str, Any]:
+    active_session = get_session()
 
-    anti_xsrf: str | None = session.cookies.get("__AntiXsrfToken")
+    anti_xsrf: str | None = active_session.cookies.get("__AntiXsrfToken")
 
     dea_csrftoken: str = str(uuid.uuid4())
 
@@ -154,7 +207,7 @@ def browse_events(
         }
     }
 
-    r2: requests.Response = session.post(
+    r2: requests.Response = active_session.post(
         api_url, headers=headers, json=payload, timeout=20
     )
     r2.raise_for_status()

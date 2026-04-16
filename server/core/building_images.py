@@ -13,6 +13,11 @@ BUILDING_IMAGE_FILENAMES: dict[str, str] = {
     "mueller-recreation": "mueller.jpg",
     "87-gym": "87.jpg",
     "ecav-stadium": "ecav.jpg",
+    "mueller-armory-building": "rpi-armory.jpg",
+    "playhouse": "playhouse.jpg",
+    "center-for-biotechnology-and-interdisciplinary-studies": "cbis.jpg",
+    "sage-buidling": "sage_lab.jpg",
+    "j-rowl": "jrowl.jpg"
 }
 
 BUILDING_SLUGS_BY_NAME: dict[str, str] = {
@@ -28,6 +33,11 @@ BUILDING_SLUGS_BY_NAME: dict[str, str] = {
     "ECAV Stadium": "ecav-stadium",
     "East Campus Stadium": "ecav-stadium",
     "East Campus Athletic Village": "ecav-stadium",
+    "Mueller Armory Building": "mueller-armory-building",
+    "Playhouse": "playhouse",
+    "Center for Biotechnology and Interdisciplinary Studies": "center-for-biotechnology-and-interdisciplinary-studies",
+    "Sage Building": "sage-building",
+    "Jonsson Rowland Science Center": "j-rowl"
 }
 
 

@@ -72,7 +72,8 @@ def sync_day(target_day: date) -> dict[str, int]:
             }
             _, created = Reservation.objects.update_or_create(
                 external_reservation_id=reservation_data["external_reservation_id"],
-                defaults={**reservation_defaults, "room": room},
+                room = room, 
+                defaults=reservation_defaults,
             )
             if created:
                 created_counts["reservations"] += 1
