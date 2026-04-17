@@ -2,10 +2,22 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import {
+  notFound,
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useState } from "react";
 import { getBuildingById, getBuildingBySlug } from "../../data/buildings";
-import type { ApiBuilding, Building } from "../../data/buildings";
+import type {
+  ApiBuilding,
+  ApiBuildingDailyEvent,
+  ApiScheduleState,
+  ApiScheduleWindow,
+  Building,
+} from "../../data/buildings";
 
 type BuildingViewModel = {
   name: string;
@@ -16,16 +28,85 @@ type BuildingViewModel = {
   hours: string;
   highlights: string[];
   facilities: string[];
+  selectedDate: string;
+  scheduleState: ApiScheduleState;
+  scheduleWindow: ApiScheduleWindow;
+  dailyEvents: ApiBuildingDailyEvent[];
 };
 
-const scheduleSkeleton = [
-  { startTime: "8:00 AM", endTime: "9:15 AM" },
-  { startTime: "10:00 AM", endTime: "11:20 AM" },
-  { startTime: "12:30 PM", endTime: "1:45 PM" },
-  { startTime: "3:00 PM", endTime: "4:30 PM" },
-];
+const NEW_YORK_TIMEZONE = "America/New_York";
+const EMPTY_SCHEDULE_WINDOW: ApiScheduleWindow = {
+  start_date: null,
+  end_date: null,
+};
 
-function buildFallbackView(building: Building): BuildingViewModel {
+function getTodayInNewYork(): string {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: NEW_YORK_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  const parts = formatter.formatToParts(new Date());
+  const year = parts.find((part) => part.type === "year")?.value ?? "1970";
+  const month = parts.find((part) => part.type === "month")?.value ?? "01";
+  const day = parts.find((part) => part.type === "day")?.value ?? "01";
+
+  return `${year}-${month}-${day}`;
+}
+
+function isValidDateParam(value: string | null): value is string {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+
+  return (
+    Number.isFinite(parsed.getTime()) &&
+    parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day
+  );
+}
+
+function sanitizeDateParam(value: string | null): string {
+  return isValidDateParam(value) ? value : getTodayInNewYork();
+}
+
+function getCalendarDate(value: string): Date {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+}
+
+function formatDisplayDate(value: string): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: NEW_YORK_TIMEZONE,
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(getCalendarDate(value));
+}
+
+function formatEventTime(value: string): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: NEW_YORK_TIMEZONE,
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function formatEventRange(event: ApiBuildingDailyEvent): string {
+  if (event.is_all_day) {
+    return "All day";
+  }
+
+  return `${formatEventTime(event.start_time)} - ${formatEventTime(event.end_time)}`;
+}
+
+function buildFallbackView(building: Building, selectedDate: string): BuildingViewModel {
   return {
     name: building.name,
     campus: building.abbreviation,
@@ -35,10 +116,18 @@ function buildFallbackView(building: Building): BuildingViewModel {
     hours: building.hours,
     highlights: building.highlights,
     facilities: building.facilities,
+    selectedDate,
+    scheduleState: "empty",
+    scheduleWindow: EMPTY_SCHEDULE_WINDOW,
+    dailyEvents: [],
   };
 }
 
-function buildApiView(building: ApiBuilding, fallback?: Building): BuildingViewModel {
+function buildApiView(
+  building: ApiBuilding,
+  selectedDate: string,
+  fallback?: Building,
+): BuildingViewModel {
   return {
     name: building.name,
     campus: building.campus,
@@ -48,18 +137,61 @@ function buildApiView(building: ApiBuilding, fallback?: Building): BuildingViewM
     hours: fallback?.hours || "Hours not available yet.",
     highlights: fallback?.highlights || ["Campus access", "Shared academic spaces", "Daily student use"],
     facilities: fallback?.facilities || ["Entry access", "Shared seating", "Wayfinding support"],
+    selectedDate: building.selected_date || selectedDate,
+    scheduleState: building.schedule_state || "empty",
+    scheduleWindow: building.schedule_window || EMPTY_SCHEDULE_WINDOW,
+    dailyEvents: building.daily_events || [],
   };
+}
+
+function buildScheduleSummary(building: BuildingViewModel): string {
+  if (building.scheduleState === "available") {
+    return `Reservations scheduled for ${formatDisplayDate(building.selectedDate)}. Times are shown in Eastern Time.`;
+  }
+
+  if (building.scheduleState === "out_of_range") {
+    if (building.scheduleWindow.start_date && building.scheduleWindow.end_date) {
+      return `Reservation data is currently available from ${formatDisplayDate(building.scheduleWindow.start_date)} to ${formatDisplayDate(building.scheduleWindow.end_date)}.`;
+    }
+
+    return "Reservation data is not available for the selected date yet.";
+  }
+
+  return `No reservations scheduled for ${formatDisplayDate(building.selectedDate)}.`;
+}
+
+function buildScheduleBadge(building: BuildingViewModel): string {
+  if (building.scheduleState === "available") {
+    return `${building.dailyEvents.length} event${building.dailyEvents.length === 1 ? "" : "s"}`;
+  }
+
+  if (building.scheduleState === "out_of_range") {
+    return "Out of range";
+  }
+
+  return "No events";
 }
 
 export default function BuildingPage() {
   const params = useParams<{ name: string }>();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const routeValue = params?.name;
+  const requestedDate = searchParams.get("date");
+  const sanitizedDate = sanitizeDateParam(requestedDate);
   const fallbackBuilding = routeValue ? getBuildingBySlug(routeValue) : undefined;
   const [building, setBuilding] = useState<BuildingViewModel | null>(
-    fallbackBuilding ? buildFallbackView(fallbackBuilding) : null,
+    fallbackBuilding ? buildFallbackView(fallbackBuilding, sanitizedDate) : null,
   );
   const [isLoading, setIsLoading] = useState(!fallbackBuilding);
   const [hasResolved, setHasResolved] = useState(Boolean(fallbackBuilding));
+
+  useEffect(() => {
+    if (pathname && requestedDate !== sanitizedDate) {
+      router.replace(`${pathname}?date=${sanitizedDate}`, { scroll: false });
+    }
+  }, [pathname, requestedDate, router, sanitizedDate]);
 
   useEffect(() => {
     if (!routeValue) {
@@ -72,7 +204,7 @@ export default function BuildingPage() {
     const fallback = getBuildingBySlug(routeValue);
 
     if (fallback) {
-      setBuilding(buildFallbackView(fallback));
+      setBuilding(buildFallbackView(fallback, sanitizedDate));
       setIsLoading(false);
       setHasResolved(true);
       return;
@@ -80,14 +212,14 @@ export default function BuildingPage() {
 
     setIsLoading(true);
 
-    getBuildingById(routeValue).then((data) => {
+    getBuildingById(routeValue, sanitizedDate).then((data) => {
       if (ignore) {
         return;
       }
 
       if (data) {
         const matchedFallback = getBuildingBySlug(data.slug);
-        setBuilding(buildApiView(data, matchedFallback));
+        setBuilding(buildApiView(data, sanitizedDate, matchedFallback));
       } else {
         setBuilding(null);
       }
@@ -99,7 +231,7 @@ export default function BuildingPage() {
     return () => {
       ignore = true;
     };
-  }, [routeValue]);
+  }, [routeValue, sanitizedDate]);
 
   if (isLoading) {
     return (
@@ -221,7 +353,7 @@ export default function BuildingPage() {
         </section>
 
         <section className="mt-8 rounded-[28px] border border-zinc-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8f4ef_100%)] p-6 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.45)]">
-          <div className="flex flex-col gap-3 border-b border-zinc-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-4 border-b border-zinc-200 pb-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.22em] text-red-700">
                 Daily events
@@ -230,40 +362,106 @@ export default function BuildingPage() {
                 Building schedule timeline
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600">
-                This section is ready for event data. Each row can show what is happening in
-                the building, when it starts, and when it ends.
+                {buildScheduleSummary(building)}
               </p>
             </div>
-            <div className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-red-700">
-              Placeholder structure
+
+            <div className="flex flex-col gap-3 sm:items-end">
+              <label className="flex flex-col gap-2 text-sm font-medium text-zinc-700">
+                <span className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+                  Select date
+                </span>
+                <input
+                  type="date"
+                  value={building.selectedDate}
+                  min={building.scheduleWindow.start_date ?? undefined}
+                  max={building.scheduleWindow.end_date ?? undefined}
+                  onChange={(event) => {
+                    if (!event.target.value || !pathname) {
+                      return;
+                    }
+
+                    const nextDate = sanitizeDateParam(event.target.value);
+                    setBuilding((currentBuilding) =>
+                      currentBuilding
+                        ? {
+                            ...currentBuilding,
+                            selectedDate: nextDate,
+                          }
+                        : currentBuilding,
+                    );
+                    router.replace(`${pathname}?date=${nextDate}`, {
+                      scroll: false,
+                    });
+                  }}
+                  className="rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-semibold text-zinc-900 shadow-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100"
+                />
+              </label>
+              <div className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-red-700">
+                {buildScheduleBadge(building)}
+              </div>
             </div>
           </div>
 
-          <div className="mt-6 space-y-4">
-            {scheduleSkeleton.map((slot) => (
-              <div
-                key={`${slot.startTime}-${slot.endTime}`}
-                className="grid gap-4 rounded-[24px] border border-dashed border-zinc-300 bg-white/80 p-5 md:grid-cols-[180px_1fr]"
-              >
-                <div className="rounded-2xl bg-zinc-950 px-4 py-4 text-white">
-                  <p className="text-xs uppercase tracking-[0.2em] text-white/45">Time</p>
-                  <p className="mt-3 text-lg font-semibold">{slot.startTime}</p>
-                  <p className="text-sm text-white/65">to {slot.endTime}</p>
-                </div>
+          {building.scheduleState === "available" ? (
+            <div className="mt-6 space-y-4">
+              {building.dailyEvents.map((event) => (
+                <div
+                  key={event.id}
+                  className="grid gap-4 rounded-[24px] border border-zinc-200 bg-white/90 p-5 md:grid-cols-[180px_1fr]"
+                >
+                  <div className="rounded-2xl bg-zinc-950 px-4 py-4 text-white">
+                    <p className="text-xs uppercase tracking-[0.2em] text-white/45">Time</p>
+                    <p className="mt-3 text-lg font-semibold">
+                      {event.is_all_day ? "All day" : formatEventTime(event.start_time)}
+                    </p>
+                    <p className="text-sm text-white/65">
+                      {event.is_all_day ? formatDisplayDate(building.selectedDate) : `to ${formatEventTime(event.end_time)}`}
+                    </p>
+                  </div>
 
-                <div className="flex flex-col justify-center">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="h-5 w-40 rounded-full bg-zinc-200" />
-                    <div className="h-6 w-24 rounded-full bg-red-100" />
-                  </div>
-                  <div className="mt-3 space-y-2">
-                    <div className="h-4 w-full max-w-xl rounded-full bg-zinc-100" />
-                    <div className="h-4 w-full max-w-md rounded-full bg-zinc-100" />
+                  <div className="flex flex-col justify-center">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full border border-zinc-300 bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-700">
+                        {event.room_name}
+                      </span>
+                      {event.room_code ? (
+                        <span className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-red-700">
+                          {event.room_code}
+                        </span>
+                      ) : null}
+                      {event.status ? (
+                        <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                          {event.status}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="mt-3 text-lg font-semibold text-zinc-950">{event.event_name}</p>
+                    <p className="mt-2 text-sm leading-6 text-zinc-600">
+                      {event.group_name ? `${event.group_name} - ` : ""}
+                      {formatEventRange(event)}
+                    </p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-6 rounded-[24px] border border-dashed border-zinc-300 bg-white/80 p-6">
+              <p className="text-lg font-semibold text-zinc-950">
+                {building.scheduleState === "out_of_range"
+                  ? "Selected date is outside the available reservation window."
+                  : `No reservations scheduled for ${formatDisplayDate(building.selectedDate)}.`}
+              </p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600">
+                {building.scheduleState === "out_of_range" &&
+                building.scheduleWindow.start_date &&
+                building.scheduleWindow.end_date
+                  ? `Try a date between ${formatDisplayDate(building.scheduleWindow.start_date)} and ${formatDisplayDate(building.scheduleWindow.end_date)}.`
+                  : "If a room in this building is reserved for the selected day, it will appear here with the room, event name, and time."}
+              </p>
+            </div>
+          )}
         </section>
       </div>
     </main>

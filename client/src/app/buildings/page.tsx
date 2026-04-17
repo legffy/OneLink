@@ -30,6 +30,7 @@ export default function Campus() {
               campus={building.campus}
               id={building.id}
               imageUrl={building.image_url}
+              description={building.description}
             />
           ))}
         </div>

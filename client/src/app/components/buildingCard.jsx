@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function BuildingCard({ name, slug, campus, id, imageUrl }) {
+export default function BuildingCard({ name, slug, campus, id, imageUrl, description }) {
   const imageSrc = imageUrl || "/mueller.jpg";
   const isRemoteImage = imageSrc.startsWith("http");
 
@@ -35,7 +35,8 @@ export default function BuildingCard({ name, slug, campus, id, imageUrl }) {
           <span className="font-semibold text-zinc-900">{campus}</span>
         </div>
         <p className="text-sm leading-6 text-zinc-600">
-          Open the building page for location details, hours, and schedule placeholders.
+    {description ? description :         "Open the building page for location details, hours, and schedule placeholders."
+}
         </p>
         <div className="flex items-center justify-between border-t border-zinc-200 pt-4 text-sm font-semibold text-zinc-900">
           <span>Open building page</span>

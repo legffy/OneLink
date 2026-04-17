@@ -38,6 +38,7 @@ export default function Home() {
               campus={building.campus}
               id={building.id}
               imageUrl={building.image_url}
+              description={building.description}
             />
           ))}
         </div>

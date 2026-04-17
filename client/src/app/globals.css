@@ -120,3 +120,8 @@ main {
 .dropdownItem:hover {
   background: #c8102e;
 }
+img {
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+}
