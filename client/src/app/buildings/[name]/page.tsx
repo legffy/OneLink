@@ -50,7 +50,7 @@ export default async function BuildingPage({ params }: PageProps) {
           href="/"
           className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/20 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-black/30"
         >
-          ← Back to buildings
+          {"< Back to buildings"}
         </Link>
 
         <section className="mt-6 overflow-hidden rounded-[36px] border border-white/10 bg-zinc-950 text-white shadow-[0_40px_100px_-45px_rgba(0,0,0,0.75)]">

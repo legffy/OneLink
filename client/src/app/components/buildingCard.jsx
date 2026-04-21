@@ -33,8 +33,8 @@ export default function BuildingCard({ name, description, image, slug, seats, ab
         <p className="text-sm leading-6 text-zinc-600">{description}</p>
         <div className="flex items-center justify-between border-t border-zinc-200 pt-4 text-sm font-semibold text-zinc-900">
           <span>Open building page</span>
-          <span className="transition-transform duration-300 group-hover:translate-x-1">
-            →
+          <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
+            {">"}
           </span>
         </div>
       </div>

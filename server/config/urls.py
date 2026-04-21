@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rest_framework.viewsets import ModelViewSet
 from core.views import BuildingView, RoomView, GroupView, ReservationView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/buildings/", BuildingView.as_view()),

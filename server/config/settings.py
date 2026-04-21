@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from celery.schedules import crontab
+from django.core.exceptions import ImproperlyConfigured
 
 from dotenv import load_dotenv
 
@@ -24,13 +25,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
+
+def env_required(name: str) -> str:
+    value = os.getenv(name)
+    if value is None or value == "":
+        raise ImproperlyConfigured(f"Missing required environment variable: {name}")
+    return value
+
+
+def env_flag(name: str, default: bool = False) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ro%-54!re*(!l#=60qpb9e5qkb75(+3#6x(1hy#e^_c4l^)5bx'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-ro%-54!re*(!l#=60qpb9e5qkb75(+3#6x(1hy#e^_c4l^)5bx")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_flag("DJANGO_DEBUG", default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host for host in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if host]
 
 
 # Application definition
@@ -87,11 +102,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': os.environ['SUPABASE_SESSION_USER'],
-        'PASSWORD': os.environ['SUPABASE_PASSWORD'],
-        'HOST': os.environ['SUPABASE_SESSION_HOST'],
-        'PORT': '5432',
+        'NAME': os.getenv('SUPABASE_DB_NAME', 'postgres'),
+        'USER': env_required('SUPABASE_SESSION_USER'),
+        'PASSWORD': env_required('SUPABASE_PASSWORD'),
+        'HOST': env_required('SUPABASE_SESSION_HOST'),
+        'PORT': os.getenv('SUPABASE_DB_PORT', '5432'),
     }
 }
 

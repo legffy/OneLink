@@ -1,30 +1,25 @@
-# views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.request import Request
-from rest_framework import status
-from typing import Any
+from rest_framework import generics
 
-from .models import Building, Group, Room, Reservation
-from .serializers import BuildingSerializer, ReservationSerializer, RoomSerializer, GroupSerializer
-class BuildingView(APIView):
-    def get(self, request: Request) -> Response:
-        buildings = Building.objects.all()
-        serializer = BuildingSerializer(buildings, many=True)
-        return Response(serializer.data)
-class RoomView(APIView):
-    def get(self, request: Request) -> Response:
-        rooms = Room.objects.all()
-        serializer = RoomSerializer(rooms, many=True)
-        return Response(serializer.data)
-class GroupView(APIView):
-    def get(self, request: Request) -> Response:
-        groups = Group.objects.all()
-        serializer = GroupSerializer(groups, many=True)
-        return Response(serializer.data)
-class ReservationView(APIView):
-    def get(self, request: Request) -> Response:
-        reservations = Reservation.objects.all()
-        serializer = ReservationSerializer(reservations, many=True)
-        return Response(serializer.data)
+from .models import Building, Group, Reservation, Room
+from .serializers import BuildingSerializer, GroupSerializer, ReservationSerializer, RoomSerializer
+
+
+class BuildingView(generics.ListAPIView):
+    queryset = Building.objects.all()
+    serializer_class = BuildingSerializer
+
+
+class RoomView(generics.ListAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
+
+class GroupView(generics.ListAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+
+class ReservationView(generics.ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
 

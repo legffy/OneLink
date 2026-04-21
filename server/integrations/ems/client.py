@@ -16,9 +16,13 @@ base_url: str = "https://rpi.emscloudservice.com/web"
 browse_url: str = f"{base_url}/BrowseEvents.aspx"
 api_url: str = f"{base_url}/AnonymousServersApi.aspx/BrowseEvents"
 session: requests.Session = requests.Session()
-session.get(browse_url, timeout=20)
 
 ResultType = Literal["Daily", "Weekly", "Monthly"]
+
+
+def _initialize_session() -> None:
+    if session.cookies.get("__AntiXsrfToken") is None:
+        session.get(browse_url, timeout=20)
 
 
 def getCurrentEvents():
@@ -124,6 +128,7 @@ def print_list_fields(obj: Any, path: str = "") -> None:
 def browse_events(
     start_date: str, end_date: str, result_type: ResultType
 ) -> dict[str, Any]:
+    _initialize_session()
 
     anti_xsrf: str | None = session.cookies.get("__AntiXsrfToken")
 
