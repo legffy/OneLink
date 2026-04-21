@@ -22,8 +22,6 @@ export type Building = {
   eventSchedule?: BuildingEvent[];
 };
 
-
-
 export const buildings: Building[] = [
   {
     name: "Darrin Communications Center",
@@ -143,12 +141,12 @@ export function getBuildingBySlug(slug: string) {
   return buildings.find((building) => building.slug === slug);
 }
 
-export async function getBuildingInfo() {
-  try{ const res = await fetch("http://127.0.0.1:8000/api/buildings/"); 
-      const data = await res.json();
-      return data;
-  }catch (error){ 
-        console.error("Error fetching tree data:", error); 
-      }     
-    return {}
+export async function getBuildingInfo(): Promise<unknown> {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/buildings/");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching building data:", error);
+    return {};
   }
+}
