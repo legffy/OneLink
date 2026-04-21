@@ -156,6 +156,7 @@ class Reservation(models.Model):
 
     def __str__(self) -> str:
         return f"{self.event_name} @ {self.room}"
+
     def clean(self) -> None:
         if self.end_time <= self.start_time:
             raise ValidationError("end_time must be after start_time")
