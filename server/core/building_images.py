@@ -18,7 +18,13 @@ BUILDING_IMAGE_FILENAMES: dict[str, str] = {
     "center-for-biotechnology-and-interdisciplinary-studies": "cbis.jpg",
     "sage-buidling": "sage_lab.jpg",
     "j-rowl": "jrowl.jpg",
-    "lally": "lally.jpg"
+    "lally": "lally.jpg",
+    "troy": "troy.jpg",
+    "harkness": "harkness.jpg",
+    "west": "west.jpg",
+    "commons": "commons.jpg",
+    "dcc-hass": "darrin.png",
+    "sharp": "sharp.jpg"
 }
 
 BUILDING_SLUGS_BY_NAME: dict[str, str] = {
@@ -39,7 +45,13 @@ BUILDING_SLUGS_BY_NAME: dict[str, str] = {
     "Center for Biotechnology and Interdisciplinary Studies": "center-for-biotechnology-and-interdisciplinary-studies",
     "Sage Building": "sage-building",
     "Jonsson Rowland Science Center": "j-rowl",
-    "Lally School of Management": "lally"
+    "Lally School of Management": "lally",
+    "Troy Building": "troy",
+    "Ned Harkness Field and Track": "harkness",
+    "West Hall": "west",
+    "Commons Dining Hall": "commons",
+    "Darrin Hass": "dcc-hass",
+    "Sharp Tennis Courts": "sharp"
 }
 
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 import json
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 from django.test import SimpleTestCase, TestCase
 
 from integrations.ems.client import getGivenDayEvents, parse_ems_datetime
+from integrations.ems.sync import sync_day
 from .models import Building, Reservation, Room
 
 
@@ -234,3 +235,53 @@ class BuildingDetailScheduleWindowFallbackTests(TestCase):
         self.assertEqual(payload["schedule_state"], "empty")
         self.assertEqual(payload["daily_events"], [])
         self.assertEqual(payload["schedule_window"], {"start_date": None, "end_date": None})
+
+
+class EmsSyncBuildingDedupTests(TestCase):
+    @patch("integrations.ems.sync.getGivenDayEvents")
+    def test_sync_merges_dcc_aliases_by_canonical_slug(self, mock_get_events) -> None:
+        mock_get_events.return_value = {
+            "buildings": [
+                {
+                    "name": "Darrin Communications Center",
+                    "external_building_id": 1001,
+                    "code": "DCC",
+                    "slug": "darrin-communications-center",
+                    "raw_name": "dcc",
+                },
+                {
+                    "name": "Darrin Communications Center",
+                    "external_building_id": 2002,
+                    "code": "DCC HASS GRAD",
+                    "slug": "darrin-communications-center",
+                    "raw_name": "dcc_hass_grad",
+                },
+            ],
+            "rooms": [
+                {
+                    "display_name": "Room 1",
+                    "external_room_id": 3001,
+                    "room_code": "DCC-1",
+                    "external_building_id": 1001,
+                    "building_slug": "darrin-communications-center",
+                },
+                {
+                    "display_name": "Room 2",
+                    "external_room_id": 3002,
+                    "room_code": "DCC-2",
+                    "external_building_id": 2002,
+                    "building_slug": "darrin-communications-center",
+                },
+            ],
+            "reservations": [],
+        }
+
+        sync_day(date(2026, 4, 21))
+
+        building = Building.objects.get(slug="darrin-communications-center")
+        self.assertEqual(Building.objects.count(), 1)
+        self.assertEqual(building.external_building_id, 1001)
+        self.assertEqual(
+            set(building.rooms.values_list("external_room_id", flat=True)),
+            {3001, 3002},
+        )

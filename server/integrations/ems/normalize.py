@@ -4,7 +4,9 @@ from core.building_images import BUILDING_SLUGS_BY_NAME
 
 
 def normalize_building_name(building_name: str) -> str:
-    building_name = building_name.lower()
+    building_name = building_name.strip().lower()
+    if "dcc" in building_name:
+        return "Darrin Communications Center"
     if building_name == "87gym":
         return "87 Gymnasium"
     if building_name == "biotk1":
@@ -47,6 +49,18 @@ def normalize_building_name(building_name: str) -> str:
         return "East Campus Stadium"
     if building_name == "lower renwyck turf field":
         return "Lower Renwyck Turf Field"
+    if building_name == "troy":
+        return "Troy Building"
+    if building_name == "ned harkness field and track":
+        return "Ned Harkness Field and Track"
+    if building_name == "west":
+        return "West Hall"
+    if building_name == "commons":
+        return "Commons Dining Hall"
+    if building_name == "darrin hass":
+        return "Darrin Hass"
+    if building_name == "sharp tennis courts":
+        return "Sharp Tennis Courts"
     return building_name
    
 def normalize_slug(building_name: str) ->str:

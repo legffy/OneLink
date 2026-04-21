@@ -106,14 +106,24 @@ def getGivenDayEvents(day: int, month: int, year: int):
     res = {"reservations": [], "buildings": [], "rooms": []}
     for item in dayResults:
         building_name = ""  # Default to empty string if not found
-        if item["Building"]  == "ec0001" or item["Building"] == "ATH-F":
+        if item["Building"] =="ATH-STC" or item["Building"]  == "ec0001" or item["Building"] == "ATH-F" or "ls" in item["Building"].lower() or "dcc" in item["Building"].lower():
             code = item["Location"].lower()
+            building = item["Building"].lower()
             if "harkness" in code:
                 building_name = "Ned Harkness Field and Track"
             elif "stadium" in code:
                 building_name = "East Campus Stadium"
             elif "lower renwyck turf" in code:
                 building_name = "Lower Renwyck Turf Field"
+            elif "ls" in code or "ls" in building:
+                building_name = "commons"
+            elif "dcc" in code or "dcc" in building:
+                if "hass" in code or "hass" in building:
+                    building_name = "Darrin hass"
+                else:
+                    building_name = "Darrin Communications Center"
+            elif "stc" in code:
+                    building_name = "Sharp Tennis Courts"
             else:
                 building_name = "East Campus Athletic Village"
         building_name = normalize_building_name(building_name if building_name != "" else item["Building"])
@@ -155,6 +165,7 @@ def getGivenDayEvents(day: int, month: int, year: int):
             "floor_id": item["FloorID"],
             "is_active": True,
             "external_building_id": item["BuildingId"],
+            "building_slug": slug,
         }
         res["buildings"].append(building_data)
         res["reservations"].append(reservation_data)
