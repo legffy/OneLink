@@ -3,6 +3,7 @@
 body {
     margin: 0;
     font-family: system-ui, -apple-system, Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 header {
@@ -45,6 +46,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     background: #c8102e;
     color: white;
     padding: 1rem;
@@ -56,6 +58,7 @@ main {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .navRight a {
@@ -83,21 +86,61 @@ main {
     }
 
     .navRight {
+        width: 100%;
         margin-top: 0.5rem;
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     #buildingList {
         grid-template-columns: 1fr;
+    }
+
+    .dropdown {
+        width: 100%;
+    }
+
+    .dropdownButton {
+        text-align: left;
+    }
+
+    .dropdownMenu {
+        left: 0;
+        right: auto;
+        width: min(100%, 28rem);
+        min-width: 0;
+        max-width: calc(100vw - 2rem);
+        max-height: min(20rem, calc(100vh - 8rem));
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.875rem;
+    }
+
+    .navRight {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .navRight a,
+    .dropdownButton {
+        font-size: 0.95rem;
+    }
+
+    .dropdownMenu {
+        width: 100%;
+        max-width: 100%;
     }
 }
 
 /* Drop down menu CSS */
 .dropdown {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .dropdownButton {
@@ -106,6 +149,8 @@ main {
   font-size: 16px;
   cursor: pointer;
   color: white;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .dropdownMenu {
@@ -129,7 +174,7 @@ main {
 .dropdownItem {
   padding: 10px;
   cursor: pointer;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .dropdownItem a {
@@ -139,6 +184,33 @@ main {
 .dropdownItem:hover {
   background: #a30d25;
 }
+
+@media (max-width: 768px) {
+  .dropdown {
+    width: 100%;
+  }
+
+  .dropdownButton {
+    text-align: left;
+  }
+
+  .dropdownMenu {
+    left: 0;
+    right: auto;
+    width: min(100%, 28rem);
+    min-width: 0;
+    max-width: calc(100vw - 2rem);
+    max-height: min(20rem, calc(100vh - 8rem));
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdownMenu {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 img {
   width: 300px;
   height: 200px;
