@@ -1,3 +1,4 @@
+"use client";
 import BuildingCard from "./components/buildingCard";
 import { getBuildingInfo } from "./data/buildings";
 import { useState, useEffect } from "react";
@@ -45,11 +46,6 @@ export default function Home() {
       <section id="mapView" className="view hidden">
         <h2>Campus Map</h2>
         <p>Map will go here later.</p>
-      </section>
-
-      <section id="announcementView" className="view hidden">
-        <h2>Announcements</h2>
-        <p>Emails will go here later.</p>
       </section>
     </main>
   );
