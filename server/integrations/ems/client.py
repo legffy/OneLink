@@ -74,6 +74,11 @@ def get_session() -> requests.Session:
 ResultType = Literal["Daily", "Weekly", "Monthly"]
 
 
+def _initialize_session() -> None:
+    if session.cookies.get("__AntiXsrfToken") is None:
+        session.get(browse_url, timeout=20)
+
+
 def getCurrentEvents():
     time: datetime = datetime.now(EMS_TIMEZONE)
     start_time: datetime = time.replace(hour=0, minute=0, second=0, microsecond=0)
