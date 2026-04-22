@@ -28,6 +28,8 @@ class Building(models.Model):
 
     created_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
     updated_at: models.DateTimeField = models.DateTimeField(auto_now=True)
+    description: models.TextField = models.TextField(blank=True)
+    image_url: models.URLField = models.URLField(blank=True)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.code or self.slug})"
@@ -129,7 +131,7 @@ class Reservation(models.Model):
     status: models.CharField = models.CharField(max_length=255, blank=True, null=True)
     description: models.TextField = models.TextField(blank=True, null=True)
 
-    external_reservation_id: models.BigIntegerField = models.BigIntegerField(unique=True, null=True, blank=True)
+    external_reservation_id: models.BigIntegerField = models.BigIntegerField(null=True, blank=True)
     external_event_id: models.BigIntegerField = models.BigIntegerField(null=True, blank=True)
 
     event_name: models.CharField = models.CharField(max_length=255)
@@ -153,9 +155,16 @@ class Reservation(models.Model):
             models.Index(fields=["room", "start_time"]),
             models.Index(fields=["start_time", "end_time"]),
         ]
+        constraints = [
+            models.UniqueConstraint(
+                fields = ["external_reservation_id", "room"],
+                name = "uniq_reservation_per_room",
+            ),
+        ]
 
     def __str__(self) -> str:
         return f"{self.event_name} @ {self.room}"
+
     def clean(self) -> None:
         if self.end_time <= self.start_time:
             raise ValidationError("end_time must be after start_time")

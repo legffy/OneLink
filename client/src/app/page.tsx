@@ -1,19 +1,17 @@
-"use client";
-
 import BuildingCard from "./components/buildingCard";
-import { buildings } from "./data/buildings";
+import { getBuildingInfo } from "./data/buildings";
 import { useState, useEffect } from "react";
+import type { ApiBuilding } from "./data/buildings";
+
 export default function Home() {
-  const [apibuildings, setApiBuildings] = useState({}); 
-  const getBuildingInfo = async () => { 
-    try{ const res = await fetch("http://127.0.0.1:8000/api/buildings/"); 
-      const data = await res.json(); setApiBuildings(data); 
-      console.log("Feteched building data:",data); } 
-      catch (error){ 
-        console.error("Error fetching tree data:", error); 
-      } 
-    } 
-    useEffect(() => { getBuildingInfo() },[])
+    const [buildings, setBuildings] = useState<ApiBuilding[]>([]);
+
+    useEffect(() => {
+      getBuildingInfo().then((data) => {
+      setBuildings(data);
+      });
+    }, []);
+  
   return (
     <main id="app" className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(200,16,46,0.12),transparent_36%),linear-gradient(180deg,#fff8f5_0%,#ffffff_48%,#f5f7fb_100%)] px-6 py-10">
       <section id="buildingView" className="view mx-auto max-w-6xl">
@@ -32,14 +30,13 @@ export default function Home() {
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {buildings.map((building) => (
             <BuildingCard
-              key={building.slug}
+              key={building.id}
               name={building.name}
               slug={building.slug}
+              campus={building.campus}
+              id={building.id}
+              imageUrl={building.image_url}
               description={building.description}
-              image={building.image}
-              seats={building.seats}
-              abbreviation={building.abbreviation}
-              tagline={building.tagline}
             />
           ))}
         </div>
@@ -57,3 +54,4 @@ export default function Home() {
     </main>
   );
 }
+

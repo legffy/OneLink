@@ -1,5 +1,12 @@
+from django.utils.text import slugify
+
+from core.building_images import BUILDING_SLUGS_BY_NAME
+
+
 def normalize_building_name(building_name: str) -> str:
-    building_name = building_name.lower()
+    building_name = building_name.strip().lower()
+    if "dcc" in building_name:
+        return "Darrin Communications Center"
     if building_name == "87gym":
         return "87 Gymnasium"
     if building_name == "biotk1":
@@ -42,51 +49,23 @@ def normalize_building_name(building_name: str) -> str:
         return "East Campus Stadium"
     if building_name == "lower renwyck turf field":
         return "Lower Renwyck Turf Field"
+    if building_name == "troy":
+        return "Troy Building"
+    if building_name == "ned harkness field and track":
+        return "Ned Harkness Field and Track"
+    if building_name == "west":
+        return "West Hall"
+    if building_name == "commons":
+        return "Commons Dining Hall"
+    if building_name == "darrin hass":
+        return "Darrin Hass"
+    if building_name == "sharp tennis courts":
+        return "Sharp Tennis Courts"
     return building_name
    
 def normalize_slug(building_name: str) ->str:
-    if building_name == "Center for Biotechnology and Interdisciplinary Studies":
-        return "CBIS"
-    if building_name == "Jonsson Engineering Center":
-        return "JEC"
-    if building_name == "Jonsson Rowland Science Center":
-        return "J-Rowl"
-    if building_name == "Mueller Robison Pool":
-        return "Pool" 
-    if building_name == "Mueller Armory Building":
-        return "Basketball courts"
-    if building_name == "Mueller Fitness Center":
-        return "Fitness Center"
-    if building_name == "Carnegie Building":   
-        return "Carnegie"
-    if building_name == "Low Center for Industrial Innovation":
-        return "Low"
-    if building_name == "Rensselaer Union":
-        return "Union"
-    if building_name == "Amos Eaton Hall":
-        return "Amos Eaton"
-    if building_name == "Darrin Communications Center":
-        return "DCC"
-    if building_name == "Pittsburgh Building":
-        return "Pittsburgh"
-    if building_name == "Materials Research Center":
-        return "MRC"
-    if building_name == "Sage Building":
-        return "Sage"
-    if building_name == "Playhouse":
-        return "Playhouse"
-    if building_name == "87 Gymnasium":
-        return "87 Gym"
-    if building_name == "Lally School of Management":
-        return "Lally"
-    if building_name == "Ricketts Building":
-        return "Ricketts"
-    if building_name == "Ned Harkness Field and Track":
-        return "Harkness"
-    if building_name == "East Campus Stadium":
-        return "Stadium"    
-    if building_name == "East Campus Athletic Village":
-        return "ECAV"
-    if building_name == "Lower Renwyck Turf Field":
-        return "LRT"
-    return building_name
+    canonical_slug = BUILDING_SLUGS_BY_NAME.get(building_name)
+    if canonical_slug:
+        return canonical_slug
+
+    return slugify(building_name)
