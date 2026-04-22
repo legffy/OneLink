@@ -7,7 +7,6 @@ from urllib.parse import quote
 BUILDING_IMAGE_FILENAMES: dict[str, str] = {
     "darrin-communications-center": "darrin.png",
     "low-center": "low.jpg",
-    "russell-sage-laboratory": "sage_lab.jpg",
     "pittsburgh-building": "pittsburgh.jpg",
     "folsom-library": "folsom_library.jpg",
     "mueller-recreation": "mueller.jpg",
@@ -16,7 +15,6 @@ BUILDING_IMAGE_FILENAMES: dict[str, str] = {
     "mueller-armory-building": "rpi-armory.jpg",
     "playhouse": "playhouse.jpg",
     "center-for-biotechnology-and-interdisciplinary-studies": "cbis.jpg",
-    "sage-buidling": "sage_lab.jpg",
     "j-rowl": "jrowl.jpg",
     "lally": "lally.jpg",
     "troy": "troy.jpg",
@@ -24,7 +22,14 @@ BUILDING_IMAGE_FILENAMES: dict[str, str] = {
     "west": "west.jpg",
     "commons": "commons.jpg",
     "dcc-hass": "darrin.png",
-    "sharp": "sharp.jpg"
+    "sharp": "sharp.jpg",
+    "robison": "robison.webp",
+    "ricketts-building": "ricketts.jpg",
+    "jec":"jonsson.jpg",
+    "rensselaer-union": "union.jpg",
+    "lower-renwyck-turf-field": "renwyck.jpg",
+    "amos-eaton-hall":"eaton.jpg",
+    "sage-building":"sage_lab.jpg"
 }
 
 BUILDING_SLUGS_BY_NAME: dict[str, str] = {
@@ -51,7 +56,13 @@ BUILDING_SLUGS_BY_NAME: dict[str, str] = {
     "West Hall": "west",
     "Commons Dining Hall": "commons",
     "Darrin Hass": "dcc-hass",
-    "Sharp Tennis Courts": "sharp"
+    "Sharp Tennis Courts": "sharp",
+    "Mueller Robison Pool": "robison",
+    "Ricketts Building": "ricketts-building",
+    "Jonsson Engineering Center": "jec",
+    "Rensselaer Union": "rensselaer-union",
+    "Lower Renwyck Turf Field": "lower-renwyck-turf-field",
+    "Amos Eaton Hall":"amos-eaton-hall"
 }
 
 
