@@ -1,3 +1,4 @@
+"use client";
 import BuildingCard from "./components/buildingCard";
 import { getBuildingInfo } from "./data/buildings";
 import { useState, useEffect } from "react";
