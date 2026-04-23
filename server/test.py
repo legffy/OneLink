@@ -110,8 +110,7 @@ def main() -> None:
     print_list_fields(data['d'])
     d: Any = data["d"]
     d_obj: dict[str, Any] = json.loads(d)
-   #print("d keys:", list(d_obj.keys()))
-    #print("MonthlyBookingResults len:", len(d_obj.get("MonthlyBookingResults", [])))
+  
 
     first = d_obj["DailyBookingResults"][0]
     print(first)

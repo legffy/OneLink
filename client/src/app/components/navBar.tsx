@@ -59,8 +59,8 @@ export default function NavBar() {
           {open && (
             <ul id={menuId} className="dropdownMenu" role="menu" aria-labelledby="buildingLink">
               {buildings.map((building) => (
-                <li key={building.slug} className="dropdownItem" role="none">
-                  <Link href={`/buildings/${building.slug}`} onClick={() => setOpen(false)} role="menuitem">
+                <li key={building.id} className="dropdownItem" role="none">
+                  <Link href={`/buildings/${building.id}`} onClick={() => setOpen(false)} role="menuitem">
                     {building.name}
                   </Link>
                 </li>
