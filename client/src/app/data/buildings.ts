@@ -161,7 +161,7 @@ export const buildings: Building[] = [
 ];
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000/api/buildings";
+  process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export function getBuildingBySlug(slug: string) {
   return buildings.find((building) => building.slug === slug);
@@ -172,6 +172,7 @@ export async function getBuildingInfo(): Promise<ApiBuilding[]> {
     const res = await fetch(`${API_BASE_URL}/`);
 
     if (!res.ok) {
+      console.log(API_BASE_URL);
       throw new Error(`Failed to fetch buildings: ${res.status}`);
     }
     return (await res.json()) as ApiBuilding[];

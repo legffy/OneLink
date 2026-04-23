@@ -45,7 +45,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-ro%-54!re*(!l#=60qp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_flag("DJANGO_DEBUG", default=True)
 
-ALLOWED_HOSTS = [host for host in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if host]
+ALLOWED_HOSTS = [host for host in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if host] +[".fly.dev"] +["127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -150,6 +150,7 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS: list[str] = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://onelink-client.fly.dev"
 ]
 
 REST_FRAMEWORK: dict[str, object] = {
