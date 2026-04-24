@@ -25,7 +25,7 @@ type BuildingViewModel = {
   description: string;
   image: string;
   location: string;
-  hours: string;
+  hours: string[];
   highlights: string[];
   facilities: string[];
   selectedDate: string;
@@ -135,7 +135,7 @@ function buildApiView(
     description: building.description || fallback?.description || "Building details will be added soon.",
     image: building.image_url || fallback?.image || "/mueller.jpg",
     location: building.address || fallback?.location || "Address will be added soon.",
-    hours: fallback?.hours || "Hours not available yet.",
+    hours: fallback?.hours || ["Hours not available yet."],
     highlights: fallback?.highlights || ["Campus access", "Shared academic spaces", "Daily student use"],
     facilities: fallback?.facilities || ["Entry access", "Shared seating", "Wayfinding support"],
     selectedDate: building.selected_date || selectedDate,
@@ -327,7 +327,10 @@ export default function BuildingPage() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-white/45">Hours</p>
-                  <p className="mt-2 text-sm font-semibold leading-6">{building.hours}</p>
+                  <p className="mt-2 text-2xl font-semibold">{building.hours.length}</p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.16em] text-white/55">
+                    posted schedule lines
+                  </p>
                 </div>
                 <div className="col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-white/45">Location</p>
@@ -338,7 +341,7 @@ export default function BuildingPage() {
           </div>
         </section>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <section className="mt-8 grid gap-6 lg:grid-cols-3">
           <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.45)]">
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-red-700">
               Building highlights
@@ -350,6 +353,22 @@ export default function BuildingPage() {
                   className="rounded-2xl border border-red-100 bg-red-50/70 px-4 py-3 text-sm font-medium text-zinc-800"
                 >
                   {highlight}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-zinc-200 bg-[linear-gradient(180deg,#fff7f2_0%,#ffffff_100%)] p-6 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.45)]">
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-red-700">
+              Hours of operation
+            </p>
+            <div className="mt-5 space-y-3">
+              {building.hours.map((hoursLine) => (
+                <div
+                  key={hoursLine}
+                  className="rounded-2xl border border-red-100 bg-white px-4 py-3 text-sm font-medium leading-6 text-zinc-800"
+                >
+                  {hoursLine}
                 </div>
               ))}
             </div>

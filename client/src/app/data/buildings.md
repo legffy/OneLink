@@ -38,24 +38,24 @@
 7. Open daily, 8:00 AM to 11:00 PM
 8. Open daily, 8:00 AM to 11:00 PM
 
-9. Open Monday-Thursday, 8:00 AM to 11:00 PM
+9. Open Monday to Thursday, 8:00 AM to 11:00 PM
 Open Friday, 8:00 AM to 11:00 PM
 Open Saturday, 11:00 AM to 8:00 PM
 Open Sunday, 11:00 AM to 11:00 PM
 
 10. Closed tempararily due to flooding
 11. Open 24/7
-12. Open Monday-Friday, 7:00 AM to 9:00 PM
-13. Open Monday-Friday, 9:00 AM to 5:00 Pm
+12. Open Monday to Friday, 7:00 AM to 9:00 PM
+13. Open Monday to Friday, 9:00 AM to 5:00 Pm
 14. Open Sunday through Thursday, 7AM to 11PM 
 
-15. Open Monday thru Thursday, 6:00 AM to 11:00 PM
+15. Open Monday to Thursday, 6:00 AM to 11:00 PM
 Open Friday, 6:00 AM to 8:00 PM 
 Open Saturday, 10:00 AM to 6:00 PM
 Open Sunday, Noon to 8:00 PM
 
 16. Open daily, 7:00 AM to Midnight
-17. Open Monday-Thursday, 7:00 AM to 10:00 PM
+17. Open Monday to Thursday, 7:00 AM to 10:00 PM
 Open Friday, 7:00 AM to 9:00 PM
 Open Saturday, 8:30 AM to 9:00 PM
 Open Sunday, 9:00 AM to 10:00 PM
@@ -67,13 +67,13 @@ Open Sunday, 9:00 AM to 10:00 PM
 Open Tuesday, 10:00 AM to 2:00 PM
 Open Wednesday, 10:00 AM to 2:00 PM
 Open Thursday, Noon to 2:00 PM
-Open Friday, 10:00 AM to 2:00 PM, 6:30–8:30 PM
+Open Friday, 10:00 AM to 2:00 PM, 6:30 to 8:30 PM
 Open Saturday, 4:00 PM to 6:00 PM
 Open Sunday, 3:00 PM to 7:00 PM
 
 21. Open daily, 6:00 AM to 10 PM
-22. Open Monday-Friday, 7:00 AM to 9:00 PM
-23. Open Monday-Friday, 7:00 AM to Midnight; Weekends, 9:00 AM to Midnight
+22. Open Monday to Friday, 7:00 AM to 9:00 PM
+23. Open Monday to Friday, 7:00 AM to Midnight; Weekends, 9:00 AM to Midnight
 24. Open daily, 9:00 AM to 8:00 PM
-25. Open Monday-Friday, 7:00 AM to 9:00 PM
-26. Open Monday-Friday, 7:00 AM to Midnight
+25. Open Monday to Friday, 7:00 AM to 9:00 PM
+26. Open Monday to Friday, 7:00 AM to Midnight

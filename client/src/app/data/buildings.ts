@@ -26,7 +26,7 @@ export type Building = {
   tagline: string;
   description: string;
   location: string;
-  hours: string;
+  hours: string[];
   highlights: string[];
   facilities: string[];
 };
@@ -56,7 +56,7 @@ export const buildings: Building[] = [
     description:
       "A busy academic building built for movement between classes, presentations, and larger campus gatherings.",
     location: "15th Street academic corridor",
-    hours: "Open daily, 7:00 AM to 11:00 PM",
+    hours: ["Open daily, 7:00 AM to 11:00 PM"],
     highlights: ["Large lecture rooms", "Central location", "Fast between-class access"],
     facilities: ["Study corners", "Indoor seating", "Nearby food options", "Accessible entrances"],
   },
@@ -70,7 +70,7 @@ export const buildings: Building[] = [
     description:
       "A central stop for campus operations with frequent foot traffic and quick access to nearby academic buildings.",
     location: "Main campus core",
-    hours: "Open weekdays, 8:00 AM to 6:00 PM",
+    hours: ["Open weekdays, 8:00 AM to 6:00 PM"],
     highlights: ["Central services", "Easy to find", "Useful starting point for visitors"],
     facilities: ["Lobby seating", "Service counters", "Meeting areas", "Accessible pathways"],
   },
@@ -84,7 +84,7 @@ export const buildings: Building[] = [
     description:
       "A practical building oriented around coursework, lab access, and day-to-day academic use.",
     location: "Science and engineering zone",
-    hours: "Open daily, 7:30 AM to 10:00 PM",
+    hours: ["Open daily, 7:30 AM to 10:00 PM"],
     highlights: ["Lab-oriented spaces", "Classroom access", "Strong academic usage"],
     facilities: ["Project rooms", "Technical labs", "Quiet hallways", "Accessible entrances"],
   },
@@ -98,7 +98,7 @@ export const buildings: Building[] = [
     description:
       "A straightforward building that supports regular course traffic and quick transitions across campus.",
     location: "Connected academic corridor",
-    hours: "Open daily, 8:00 AM to 9:00 PM",
+    hours: ["Open daily, 8:00 AM to 9:00 PM"],
     highlights: ["Convenient layout", "Classroom access", "Short walk to adjacent buildings"],
     facilities: ["Student seating", "Hallway study spots", "Nearby entrances", "Accessible routes"],
   },
@@ -112,7 +112,7 @@ export const buildings: Building[] = [
     description:
       "A flagship study destination with room for focused work, group collaboration, and longer academic sessions.",
     location: "Library plaza",
-    hours: "Open daily, 8:00 AM to midnight",
+    hours: ["Open daily, 8:00 AM to midnight"],
     highlights: ["Largest seating capacity", "Quiet and group study", "Popular study destination"],
     facilities: ["Study tables", "Research support", "Collaborative seating", "Accessible entry"],
   },
@@ -126,7 +126,7 @@ export const buildings: Building[] = [
     description:
       "A campus recreation center designed for workouts, pickup games, group activities, and everyday student wellness.",
     location: "1643 15th St, Troy, NY 12180",
-    hours: "Open daily, 8:00 AM to 11:00 PM",
+    hours: ["Open daily, 8:00 AM to 11:00 PM"],
     highlights: ["Indoor recreation space", "Popular fitness destination", "Supports sports and group activity"],
     facilities: ["Swimming pool", "Basketball courts", "Student lounge", "Weight rooms"],
   },
@@ -140,7 +140,7 @@ export const buildings: Building[] = [
     description:
       "A student recreation and athletics space used for open gym activity, workouts, and campus fitness programming.",
     location: "1145 Sage Ave, Troy, NY 12180",
-    hours: "Open daily, 8:00 AM to 11:00 PM",
+    hours: ["Open daily, 8:00 AM to 11:00 PM"],
     highlights: ["Flexible recreation space", "Popular for active student use", "Supports pickup games and training"],
     facilities: ["Gym courts", "Fitness areas", "Open recreation space", "Student gathering areas"],
   },
@@ -154,7 +154,7 @@ export const buildings: Building[] = [
     description:
       "A major outdoor athletics venue used for varsity competition, team practices, and larger campus sporting events.",
     location: "East Campus Athletic Village",
-    hours: "Open daily, 8:00 AM to 11:00 PM",
+    hours: ["Open daily, 8:00 AM to 11:00 PM"],
     highlights: ["Outdoor stadium venue", "Hosts athletic events", "Designed for team competition and spectators"],
     facilities: ["Stadium seating", "Athletic field", "Event access areas", "Team support spaces"],
   },
@@ -168,7 +168,12 @@ export const buildings: Building[] = [
     description:
       "A recognizable campus building that supports day-to-day circulation, meetings, and general academic activity.",
     location: "Main campus",
-    hours: "Hours not listed yet",
+    hours: [
+      "Open Monday to Thursday, 8:00 AM to 11:00 PM",
+      "Open Friday, 8:00 AM to 11:00 PM",
+      "Open Saturday, 11:00 AM to 8:00 PM",
+      "Open Sunday, 11:00 AM to 11:00 PM",
+    ],
     highlights: ["Historic character", "Flexible interior use", "Connected campus location"],
     facilities: ["Indoor access", "Shared spaces", "Campus wayfinding", "Accessible routes"],
   },
@@ -182,7 +187,7 @@ export const buildings: Building[] = [
     description:
       "A campus venue that supports performances, rehearsals, productions, and student event programming.",
     location: "Main campus arts corridor",
-    hours: "Hours not listed yet",
+    hours: ["Closed temporarily due to flooding"],
     highlights: ["Performance venue", "Arts programming", "Event-ready space"],
     facilities: ["Stage access", "Audience seating", "Back-of-house areas", "Accessible entry"],
   },
@@ -196,7 +201,7 @@ export const buildings: Building[] = [
     description:
       "A modern academic building focused on research, labs, and collaboration across scientific disciplines.",
     location: "Research and science district",
-    hours: "Hours not listed yet",
+    hours: ["Open 24/7"],
     highlights: ["Research labs", "Interdisciplinary focus", "Modern academic environment"],
     facilities: ["Lab space", "Collaboration areas", "Academic offices", "Accessible entrances"],
   },
@@ -210,7 +215,7 @@ export const buildings: Building[] = [
     description:
       "A science-focused building that supports coursework, lab instruction, and steady daily student traffic.",
     location: "Science and engineering zone",
-    hours: "Hours not listed yet",
+    hours: ["Open Monday to Friday, 7:00 AM to 9:00 PM"],
     highlights: ["Science classrooms", "Lab access", "Central academic use"],
     facilities: ["Teaching labs", "Study space", "Shared hallways", "Accessible entry"],
   },
@@ -224,7 +229,7 @@ export const buildings: Building[] = [
     description:
       "An academic building oriented around management education, meetings, and smaller-scale campus activity.",
     location: "Main campus academic core",
-    hours: "Hours not listed yet",
+    hours: ["Open Monday to Friday, 9:00 AM to 5:00 PM"],
     highlights: ["Management programs", "Smaller classroom spaces", "Academic services"],
     facilities: ["Meeting rooms", "Seating areas", "Classroom access", "Accessible pathways"],
   },
@@ -238,7 +243,7 @@ export const buildings: Building[] = [
     description:
       "A straightforward academic building used for classes, transitions between buildings, and everyday campus needs.",
     location: "Academic corridor",
-    hours: "Hours not listed yet",
+    hours: ["Open Sunday to Thursday, 7:00 AM to 11:00 PM"],
     highlights: ["Compact layout", "Classroom access", "Convenient campus placement"],
     facilities: ["Student seating", "Shared hallways", "Nearby entrances", "Accessible routes"],
   },
@@ -252,7 +257,12 @@ export const buildings: Building[] = [
     description:
       "An outdoor athletics venue used for track activity, training sessions, and event support throughout the season.",
     location: "Athletics district",
-    hours: "Hours not listed yet",
+    hours: [
+      "Open Monday to Thursday, 6:00 AM to 11:00 PM",
+      "Open Friday, 6:00 AM to 8:00 PM",
+      "Open Saturday, 10:00 AM to 6:00 PM",
+      "Open Sunday, Noon to 8:00 PM",
+    ],
     highlights: ["Track facilities", "Outdoor training", "Athletic events"],
     facilities: ["Track access", "Field space", "Spectator areas", "Team support areas"],
   },
@@ -266,7 +276,7 @@ export const buildings: Building[] = [
     description:
       "A campus academic space that supports classes, movement between buildings, and routine student activity.",
     location: "Main campus",
-    hours: "Hours not listed yet",
+    hours: ["Open daily, 7:00 AM to Midnight"],
     highlights: ["Classroom access", "Daily campus use", "Connected location"],
     facilities: ["Indoor seating", "Shared study areas", "Wayfinding support", "Accessible entrances"],
   },
@@ -280,7 +290,12 @@ export const buildings: Building[] = [
     description:
       "A central student dining destination that also serves as a social and between-class gathering point.",
     location: "Student life corridor",
-    hours: "Hours not listed yet",
+    hours: [
+      "Open Monday-Thursday, 7:00 AM to 10:00 PM",
+      "Open Friday, 7:00 AM to 9:00 PM",
+      "Open Saturday, 8:30 AM to 9:00 PM",
+      "Open Sunday, 9:00 AM to 10:00 PM",
+    ],
     highlights: ["Dining hub", "High student traffic", "Central gathering space"],
     facilities: ["Dining seating", "Food service", "Indoor tables", "Accessible entry"],
   },
@@ -294,7 +309,7 @@ export const buildings: Building[] = [
     description:
       "A campus academic building that supports classes, offices, and regular student movement through the area.",
     location: "Main academic corridor",
-    hours: "Hours not listed yet",
+    hours: ["Open daily, 7:00 AM to 11:00 PM"],
     highlights: ["Academic access", "Shared campus use", "Central location"],
     facilities: ["Indoor seating", "Classroom access", "Shared hallways", "Accessible routes"],
   },
@@ -308,7 +323,7 @@ export const buildings: Building[] = [
     description:
       "An outdoor athletics space used for tennis practice, competition, and campus recreation.",
     location: "Athletics district",
-    hours: "Hours not listed yet",
+    hours: ["Hours not listed yet"],
     highlights: ["Tennis courts", "Outdoor recreation", "Athletic use"],
     facilities: ["Court access", "Spectator space", "Team areas", "Nearby walkways"],
   },
@@ -322,7 +337,15 @@ export const buildings: Building[] = [
     description:
       "A campus pool facility used for aquatics, recreation, and organized athletic programming.",
     location: "Recreation and athletics zone",
-    hours: "Hours not listed yet",
+    hours: [
+      "Open Monday, 10:00 AM to 2:00 PM",
+      "Open Tuesday, 10:00 AM to 2:00 PM",
+      "Open Wednesday, 10:00 AM to 2:00 PM",
+      "Open Thursday, Noon to 2:00 PM",
+      "Open Friday, 10:00 AM to 2:00 PM, 6:30 PM to 8:30 PM",
+      "Open Saturday, 4:00 PM to 6:00 PM",
+      "Open Sunday, 3:00 PM to 7:00 PM",
+    ],
     highlights: ["Pool facility", "Recreational use", "Athletic programming"],
     facilities: ["Pool deck", "Locker access", "Seating areas", "Accessible entry"],
   },
@@ -336,7 +359,7 @@ export const buildings: Building[] = [
     description:
       "A well-used academic building that supports classes, transitions, and routine campus activity throughout the day.",
     location: "Academic corridor",
-    hours: "Hours not listed yet",
+    hours: ["Open daily, 6:00 AM to 10:00 PM"],
     highlights: ["Classroom use", "Lecture space", "Steady student traffic"],
     facilities: ["Indoor seating", "Classroom access", "Study areas", "Accessible routes"],
   },
@@ -350,7 +373,7 @@ export const buildings: Building[] = [
     description:
       "A core engineering building that supports labs, lectures, project work, and regular academic use.",
     location: "Engineering district",
-    hours: "Hours not listed yet",
+    hours: ["Open Monday-Friday, 7:00 AM to 9:00 PM"],
     highlights: ["Engineering focus", "Lab and lecture mix", "Project-oriented spaces"],
     facilities: ["Labs", "Classrooms", "Collaboration areas", "Accessible entrances"],
   },
@@ -364,7 +387,8 @@ export const buildings: Building[] = [
     description:
       "A major student-centered building that brings together organizations, events, social space, and daily campus activity.",
     location: "Student life core",
-    hours: "Hours not listed yet",
+    hours: ["Open Monday-Friday, 7:00 AM to Midnight",
+      "Open Weekends, 9:00 AM to Midnight"],
     highlights: ["Student organizations", "Event space", "High-traffic campus hub"],
     facilities: ["Meeting rooms", "Lounge seating", "Event areas", "Accessible pathways"],
   },
@@ -378,7 +402,7 @@ export const buildings: Building[] = [
     description:
       "An outdoor field space used for athletics, training, and campus recreation programming.",
     location: "Athletics district",
-    hours: "Hours not listed yet",
+    hours: ["Open daily, 9:00 AM to 8:00 PM"],
     highlights: ["Turf field", "Outdoor athletics", "Training space"],
     facilities: ["Field access", "Sideline space", "Nearby walkways", "Support areas"],
   },
@@ -392,7 +416,7 @@ export const buildings: Building[] = [
     description:
       "A campus academic building that supports instruction, movement between classes, and shared university use.",
     location: "Academic core",
-    hours: "Hours not listed yet",
+    hours: ["Open Monday-Friday, 7:00 AM to 9:00 PM"],
     highlights: ["Classroom access", "Academic use", "Central location"],
     facilities: ["Indoor seating", "Shared study space", "Classroom areas", "Accessible entry"],
   },
@@ -406,7 +430,7 @@ export const buildings: Building[] = [
     description:
       "A campus building used for academic activity, classrooms, and regular student circulation through the area.",
     location: "Main campus",
-    hours: "Hours not listed yet",
+    hours: ["Open Monday-Friday, 7:00 AM to Midnight"],
     highlights: ["Academic space", "Historic campus presence", "Daily student use"],
     facilities: ["Classroom access", "Shared hallways", "Indoor seating", "Accessible routes"],
   },
