@@ -412,8 +412,7 @@ export const buildings: Building[] = [
   },
 ];
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "/api/buildings";
 
 export function getBuildingBySlug(slug: string) {
   return buildings.find((building) => building.slug === slug);
@@ -421,10 +420,8 @@ export function getBuildingBySlug(slug: string) {
 
 export async function getBuildingInfo(): Promise<ApiBuilding[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/`);
-
+    const res = await fetch(API_BASE_URL);
     if (!res.ok) {
-      console.log(API_BASE_URL);
       throw new Error(`Failed to fetch buildings: ${res.status}`);
     }
     return (await res.json()) as ApiBuilding[];
@@ -442,7 +439,7 @@ export async function getBuildingById(id: string, date?: string): Promise<ApiBui
     }
 
     const query = searchParams.toString();
-    const res = await fetch(`${API_BASE_URL}/${id}/${query ? `?${query}` : ""}`);
+    const res = await fetch(`${API_BASE_URL}/${id}${query ? `?${query}` : ""}`);
 
     if (!res.ok) {
       throw new Error(`Failed to fetch building: ${res.status}`);
