@@ -13,7 +13,7 @@ def determine_campus(name: str, code: str) -> str:
     normalized_name = (name or "").lower()
     normalized_code = (code or "").lower()
     if (
-        "ec" in normalized_name
+        "ec0" in normalized_name
         or "harkness" in normalized_code
         or "stadium" in normalized_code
         or "turf" in normalized_code

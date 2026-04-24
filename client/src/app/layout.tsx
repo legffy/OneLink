@@ -6,6 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "OneLink",
   description: "RPI building directory and campus navigation.",
+  icons: {icon:"./logo.png",},
 };
 
 export default function RootLayout({

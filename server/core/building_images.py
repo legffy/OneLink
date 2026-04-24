@@ -20,14 +20,14 @@ BUILDING_IMAGE_FILENAMES: dict[str, str] = {
     "troy": "troy.jpg",
     "harkness": "harkness.jpg",
     "west": "west.jpg",
-    "commons": "commons.jpg",
+    "commons": "commons.webp",
     "dcc-hass": "darrin.png",
     "sharp": "sharp.jpg",
     "robison": "robison.webp",
     "ricketts-building": "ricketts.jpg",
     "jec":"jonsson.jpg",
     "rensselaer-union": "union.jpg",
-    "lower-renwyck-turf-field": "renwyck.jpg",
+    "lower-renwyck-turf-field": "renwyck.webp",
     "amos-eaton-hall":"eaton.jpg",
     "sage-building":"sage_lab.jpg"
 }

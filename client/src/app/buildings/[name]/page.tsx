@@ -35,6 +35,7 @@ type BuildingViewModel = {
 };
 
 const NEW_YORK_TIMEZONE = "America/New_York";
+const HERO_IMAGE_SIZES = "(max-width: 1024px) calc(100vw - 3rem), 700px";
 const EMPTY_SCHEDULE_WINDOW: ApiScheduleWindow = {
   start_date: null,
   end_date: null,
@@ -181,11 +182,12 @@ export default function BuildingPage() {
   const requestedDate = searchParams.get("date");
   const sanitizedDate = sanitizeDateParam(requestedDate);
   const fallbackBuilding = routeValue ? getBuildingBySlug(routeValue) : undefined;
+  const hasRouteValue = Boolean(routeValue);
   const [building, setBuilding] = useState<BuildingViewModel | null>(
     fallbackBuilding ? buildFallbackView(fallbackBuilding, sanitizedDate) : null,
   );
-  const [isLoading, setIsLoading] = useState(!fallbackBuilding);
-  const [hasResolved, setHasResolved] = useState(Boolean(fallbackBuilding));
+  const [isLoading, setIsLoading] = useState(hasRouteValue && !fallbackBuilding);
+  const [hasResolved, setHasResolved] = useState(!hasRouteValue || Boolean(fallbackBuilding));
 
   useEffect(() => {
     if (pathname && requestedDate !== sanitizedDate) {
@@ -194,23 +196,43 @@ export default function BuildingPage() {
   }, [pathname, requestedDate, router, sanitizedDate]);
 
   useEffect(() => {
+    let ignore = false;
+    const resolveBuilding = (nextBuilding: BuildingViewModel | null) => {
+      Promise.resolve().then(() => {
+        if (ignore) {
+          return;
+        }
+
+        setBuilding(nextBuilding);
+        setIsLoading(false);
+        setHasResolved(true);
+      });
+    };
+
     if (!routeValue) {
-      setIsLoading(false);
-      setHasResolved(true);
-      return;
+      resolveBuilding(null);
+      return () => {
+        ignore = true;
+      };
     }
 
-    let ignore = false;
     const fallback = getBuildingBySlug(routeValue);
 
     if (fallback) {
-      setBuilding(buildFallbackView(fallback, sanitizedDate));
-      setIsLoading(false);
-      setHasResolved(true);
-      return;
+      resolveBuilding(buildFallbackView(fallback, sanitizedDate));
+      return () => {
+        ignore = true;
+      };
     }
 
-    setIsLoading(true);
+    Promise.resolve().then(() => {
+      if (ignore) {
+        return;
+      }
+
+      setIsLoading(true);
+      setHasResolved(false);
+    });
 
     getBuildingById(routeValue, sanitizedDate).then((data) => {
       if (ignore) {
@@ -256,8 +278,6 @@ export default function BuildingPage() {
     return null;
   }
 
-  const isRemoteImage = building.image.startsWith("http");
-
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(200,16,46,0.16),transparent_30%),linear-gradient(180deg,#14080a_0%,#1f1115_18%,#f7f3ef_18%,#ffffff_100%)] px-6 py-8 sm:py-12">
       <div className="mx-auto max-w-6xl">
@@ -270,14 +290,14 @@ export default function BuildingPage() {
 
         <section className="mt-6 overflow-hidden rounded-[36px] border border-white/10 bg-zinc-950 text-white shadow-[0_40px_100px_-45px_rgba(0,0,0,0.75)]">
           <div className="grid lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="relative min-h-[360px]">
+            <div className="relative min-h-[360px] bg-zinc-900">
               <Image
                 src={building.image}
                 alt={building.name}
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                unoptimized={isRemoteImage}
+                sizes={HERO_IMAGE_SIZES}
+                quality={88}
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-black via-black/45 to-transparent" />
