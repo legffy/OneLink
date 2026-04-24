@@ -75,9 +75,6 @@ export default function NavBar() {
         >
           Map
         </a>
-        <a href="#" id="announcementsLink">
-          Announcements
-        </a>
       </div>
     </header>
   );

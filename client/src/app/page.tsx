@@ -47,11 +47,6 @@ export default function Home() {
         <h2>Campus Map</h2>
         <p>Map will go here later.</p>
       </section>
-
-      <section id="announcementView" className="view hidden">
-        <h2>Announcements</h2>
-        <p>Emails will go here later.</p>
-      </section>
     </main>
   );
 }
